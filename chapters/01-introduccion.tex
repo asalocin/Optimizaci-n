@@ -1,1764 +1,712 @@
-% ============================================================
-%  Capítulo 1 — Introducción a la Inferencia Estadística
-% ============================================================
+\section{Convexidad y primeras formulaciones de optimización}
 
-\section{Tópicos en Probabilidad}
+\subsection{Forma general de un problema de optimización}
 
-Para comprender la inferencia estadística, es fundamental contar con una base sólida en probabilidad. En esta sección se introducen los conceptos que establecerán el marco teórico del curso.
-
-\subsection{Espacios de trabajo}
-
-Sea $(\Omega,\mathcal{F},P)$ un \textbf{espacio de probabilidad}, donde:
+Un problema de optimización tiene la forma
+\[
+\min\{f(x):x\in \Omega\},
+\]
+donde
 \begin{itemize}
-\item $\Omega$ es el espacio muestral,
-\item $\mathcal{F}$ es una $\sigma$-álgebra de subconjuntos de $\Omega$,
-\item $P$ es una medida de probabilidad.
+    \item \(x\) es la \emph{variable de decisión},
+    \item \(f\) es la \emph{función objetivo},
+    \item \(\Omega\subseteq \mathbb{R}^n\) es el \emph{conjunto factible}.
 \end{itemize}
 
-Consideraremos además un \textbf{espacio medible} $(\mathcal{E},\mathcal{B}(\mathcal{E}))$, donde $\mathcal{E}$ es el espacio de valores y $\mathcal{B}(\mathcal{E})$ su $\sigma$-álgebra de Borel.
-
-\subsection{Variable aleatoria y ley}
-
-\begin{defi}[Variable aleatoria]
-Una variable aleatoria con valores en $\mathcal{E}$ es una función medible
-\[
-X:\Omega \to \mathcal{E}.
-\]
-\end{defi}
-
-La medibilidad significa que, para todo $A \in \mathcal{B}(\mathcal{E})$,
-\[
-X^{-1}(A) = \{\omega \in \Omega : X(\omega) \in A\} \in \mathcal{F}.
-\]
-
-\begin{defi}[Ley de una variable aleatoria]
-La \textbf{ley} de $X$ es la medida de probabilidad $P_X$ sobre $\mathcal{E}$ definida por
-\[
-P_X(A) = P(X^{-1}(A)), \quad \forall A \in \mathcal{B}(\mathcal{E}).
-\]
-\end{defi}
-
-Equivalente y compactamente, se escribe
-\[
-P_X = P \circ X^{-1},
-\]
-y se conoce como la \textbf{medida imagen} (o \textit{pushforward}) de $P$ por $X$.
-
-\subsection{Función de distribución acumulada}
-
-Cuando $\mathcal{E} = \mathbb{R}$, la ley de $X$ puede describirse mediante su función de distribución acumulada.
-
-\begin{defi}[Función de distribución acumulada (FDA)]
-La FDA de $X$ es la función $F_X:\mathbb{R} \to [0,1]$ definida por
-\[
-\begin{aligned}
-F_X : \mathbb{R} &\to [0,1] \\
-x &\mapsto P(X \leq x) = P_X((-\infty, x]).
-\end{aligned}
-\]
-\end{defi}
-
-La FDA determina completamente la ley de $X$, ya que permite reconstruir la medida $P_X$ sobre la $\sigma$-álgebra de Borel.
-
-\subsection{Esperanza}
-
-\begin{defi}[Esperanza]
-Si $X$ es integrable, su esperanza se define por
-\[
-\E[X] = \int_{\Omega} X(\omega) \, dP(\omega).
-\]
-\end{defi}
-
-Mediante el Teorema del Transporte, esta puede expresarse en términos de la ley de $X$:
-\[
-\E[X] = \int_{\mathbb{R}} x \, dP_X(x).
-\]
-
-\subsection{Espacios \texorpdfstring{$L^p$}{Lp}}
-
-Surge naturalmente la pregunta: \textit{¿para qué variables aleatorias está bien definida la esperanza?}
-
-Para responderla, introducimos los espacios $L^p$. Para $1 \leq p < \infty$, definimos
-\[
-L^p(\Omega,\mathcal{F},P)
-= \left\{ X : \E[|X|^p] < \infty \right\}.
-\]
-
-En particular:
-\begin{itemize}
-\item $X \in L^1$ si y solo si $\E[|X|] < \infty$,
-\item en este caso, la esperanza $\E[X]$ está bien definida.
-\end{itemize}
-
-Además, como $P$ es una medida de probabilidad (finita), se tiene que
-\[
-L^p \subseteq L^1 \quad \text{para todo } p \geq 1.
-\]
-
-Sin embargo, la inclusión es estricta: existen variables en $L^1$ que no pertenecen a ningún $L^p$ con $p > 1$.
-
-\medskip
-
-\noindent
-\textbf{Conclusión:} el espacio natural donde la esperanza está bien definida es $L^1(\Omega,\mathcal{F},P)$.
-
-\subsection{Covarianza y Varianza}
-
-Primero las definimos:
-
-\begin{defi}[Covarianza]
-La covarianza entre dos variables aleatorias $X$ e $Y$ es definida por
-\[  \Cov(X,Y) = \E[(X - \E[X])(Y - \E[Y])]. \]
-\end{defi}    
-
-\begin{defi}[Varianza]
-La varianza de una variable aleatoria $X$ es definida por
-\[  \Var(X) = \E[(X - \E[X])^2]. \]
-\end{defi}    
-
-\textbf{Observación:} la varianza es un caso particular de covarianza, ya que $\Var(X) = \Cov(X,X)$ y además si $X, Y \in L^2$ entonces $\langle X,Y\rangle_{L^2} = \Cov(X,Y) = \E[XY] - \E[X]\E[Y]$.
-
-\subsection{Leyes clásicas:}
-
-\textbf{Distribuciones discretas} ($\mathcal{E} = \mathbb{R}$):
-
-\begin{itemize}
-\item \textbf{Bernoulli:} $X \sim \text{Bern}(p)$ con $P(X=1) = p$ y $P(X=0) = 1-p$. La ley es:
-\[
-P_X = p\,\delta_1 + (1-p)\,\delta_0,
-\]
-y por ende, la esperanza:
-\[
-\E[X] = \int_{\mathbb{R}} x \, dP_X(x) = \int_{\mathbb{R}} x \, d(p\,\delta_1 + (1-p)\,\delta_0)(x) = p.
-\]
-
-\item \textbf{Binomial:} $X \sim \text{Bin}(n,p)$ con $n \in \mathbb{N}$ y $p \in [0,1]$. La ley es:
-\[
-P_X = \sum_{k=0}^{n} \binom{n}{k} p^k (1-p)^{n-k} \, \delta_k,
-\]
-y por ende, la esperanza:
-\[
-\E[X] = \sum_{k=0}^{n} k \, dP_X(k) = \sum_{k=0}^{n} k \binom{n}{k} p^k (1-p)^{n-k} = np.
-\]
-
-\item \textbf{Poisson:} $X \sim \text{Poi}(\lambda)$ con $\lambda > 0$. La ley es:
-\[
-P_X = \sum_{k=0}^{\infty} e^{-\lambda} \frac{\lambda^k}{k!} \, \delta_k,
-\]
-y por ende, la esperanza:
-\[
-\E[X] = \sum_{k=0}^{\infty} k \, dP_X(k) = \sum_{k=0}^{\infty} k \, e^{-\lambda} \frac{\lambda^k}{k!} = \lambda.
-\]
-\end{itemize}
-
-\subsection{Leyes absolutamente continuas}
-
-Hasta ahora hemos descrito leyes discretas mediante combinaciones de deltas de Dirac. Sin embargo, muchas variables aleatorias de interés toman valores en $\mathbb{R}$ de manera continua.
-
-Sea $\lambda$ la \textbf{medida de Lebesgue} en $\mathbb{R}$.
-
-\begin{defi}[Medida absolutamente continua]
-Decimos que la ley $P_X$ es \textbf{absolutamente continua} respecto de la medida de Lebesgue, y escribimos
-\[
-P_X \ll \lambda,
-\]
-si para todo conjunto boreliano $A$,
-\[
-\lambda(A) = 0 \implies P_X(A) = 0.
-\]
-\end{defi}
-
-Este concepto es fundamental, ya que permite introducir densidades.
-
-\begin{teo}[Radon--Nikodym]
-Si $P_X \ll \lambda$, entonces existe una función medible $f_X:\mathbb{R} \to [0,\infty)$ tal que
-\[
-P_X(A) = \int_A f_X(x)\,dx, \quad \forall A \in \mathcal{B}(\mathbb{R}).
-\]
-\end{teo}
-
-La función $f_X$ se denomina \textbf{densidad} de $X$, y se escribe formalmente
-\[
-P_X(dx) = f_X(x)\,dx.
-\]
-
-\subsubsection*{Consecuencias}
-
-Si $X$ admite densidad $f_X$, entonces:
-
-\begin{itemize}
-\item La probabilidad de un conjunto se calcula como
-\[
-P(X \in A) = \int_A f_X(x)\,dx.
-\]
-
-\item La esperanza puede escribirse como
-\[
-\E[X] = \int_{\mathbb{R}} x f_X(x)\,dx.
-\]
-\end{itemize}
-
-\subsubsection*{Ejemplos clásicos}
-
-\begin{itemize}
-\item \textbf{Uniforme:} $X \sim \mathcal{U}(a,b)$
-\[
-f_X(x) = \frac{1}{b-a}\,\mathbb{1}_{[a,b]}(x)
-\]
-
-\item \textbf{Exponencial:} $X \sim \mathrm{Exp}(\lambda)$
-\[
-f_X(x) = \lambda e^{-\lambda x}\,\mathbb{1}_{[0,\infty)}(x)
-\]
-
-\item \textbf{Normal:} $X \sim \mathcal{N}(\mu,\sigma^2)$
-\[
-f_X(x) = \frac{1}{\sqrt{2\pi\sigma^2}}
-\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
-\]
-\end{itemize}
-
-\medskip
-
-\noindent
-\textbf{Interpretación:} en el caso discreto, la ley se escribe como suma de deltas; en el caso continuo, como una densidad respecto a la medida de Lebesgue. Ambos enfoques son unificados mediante la noción de medida.
-
-\subsection{Independencia}
-
-La noción de independencia puede formularse tanto en términos de eventos como en términos de leyes.
-
-\medskip
-
-\noindent
-\textbf{Recordatorio:} si $X:\Omega \to \mathcal{E}$ es una variable aleatoria, entonces $X$ induce la $\sigma$-álgebra
-\[
-\sigma(X)=\{X^{-1}(A):A\in\mathcal{B}(\mathcal{E})\}.
-\]
-En este sentido, la independencia de variables aleatorias puede entenderse como independencia entre las $\sigma$-álgebras que ellas generan.
-
-\begin{defi}[Variables aleatorias independientes]
-Sean $X_1,\dots,X_n$ variables aleatorias con valores en $\mathcal{E}$. Diremos que son \textbf{independientes} si para todo $B_1,\dots,B_n \in \mathcal{B}(\mathcal{E})$ se tiene
-\[
-P(X_1\in B_1,\dots,X_n\in B_n)
-=
-\prod_{i=1}^{n} P(X_i\in B_i).
-\]
-\end{defi}
-
-\noindent
-Dicho de otra forma, la ley de la variable aleatoria vectorial
-\[
-(X_1,\dots,X_n):\Omega\to \mathcal{E}^n
-\]
-satisface
-\[
-P_{(X_1,\dots,X_n)}
-=
-P_{X_1}\otimes P_{X_2}\otimes\cdots\otimes P_{X_n}.
-\]
-
-En efecto, para todo $B_1,\dots,B_n\in\mathcal{B}(\mathcal{E})$,
-\[
-P_{(X_1,\dots,X_n)}(B_1\times\cdots\times B_n)
-=
-P\big((X_1,\dots,X_n)\in B_1\times\cdots\times B_n\big),
-\]
-y por definición de la variable aleatoria vectorial,
-\[
-P\big((X_1,\dots,X_n)\in B_1\times\cdots\times B_n\big)
-=
-P(X_1\in B_1,\dots,X_n\in B_n).
-\]
-
-Por otra parte,
-\[
-(P_{X_1}\otimes\cdots\otimes P_{X_n})(B_1\times\cdots\times B_n)
-=
-\prod_{i=1}^n P_{X_i}(B_i)
-=
-\prod_{i=1}^n P(X_i\in B_i).
-\]
-
-Luego, la independencia equivale a que la ley conjunta coincida con el producto de las leyes marginales.
-
-\medskip
-
-\noindent
-\textbf{Observación:} no debe confundirse independencia conjunta con independencia dos a dos.
-
-Decimos que $X_1,\dots,X_n$ son \textbf{independientes dos a dos} si para todo $i\neq j$, las variables $X_i$ y $X_j$ son independientes.
-
-En general,
-\[
-\text{independencia conjunta} \implies \text{independencia dos a dos},
-\]
-pero el recíproco es falso.
-
-\subsubsection*{Ejemplo}
-
-Sean $X$ e $Y$ variables aleatorias i.i.d.\ con ley $\mathrm{Bernoulli}(1/2)$ y definamos
-\[
-Z = X+Y \pmod 2.
-\]
-
-Entonces $(X,Y,Z)$ son independientes dos a dos, pero no son independientes conjuntamente.
-
-En efecto, existe una relación determinista entre ellas:
-\[
-Z = X+Y \pmod 2.
-\]
-Por tanto, conocer $X$ e $Y$ determina completamente a $Z$, lo que impide la independencia mutua.
-
-Por ejemplo,
-\[
-P(X=0,Y=0,Z=1)=0,
-\]
-mientras que
-\[
-P(X=0)\,P(Y=0)\,P(Z=1)
-=
-\frac12\cdot\frac12\cdot\frac12
-=
-\frac18.
-\]
-Como
-\[
-0\neq \frac18,
-\]
-se concluye que $X$, $Y$ y $Z$ no son independientes.
-
-\subsubsection*{Factorización de esperanzas}
-
-La independencia permite factorizar esperanzas de productos de funciones, como veremos a continuación:
-
-\textbf{Proposición:} si $X_1,\dots,X_n$ son independientes y $h_1,\dots,h_n:\mathcal{E}\to\mathbb{R}$ son medibles y no negativas, entonces
-\[
-\E\left[\prod_{i=1}^n h_i(X_i)\right]
-=
-\prod_{i=1}^n \E[h_i(X_i)].
-\]
-
-Más generalmente, la igualdad sigue siendo válida siempre que las cantidades involucradas estén bien definidas.
-
-\medskip
-
-\noindent
-\subsubsection*{Demostración}
-
-Sea
-\[
-H:\mathcal{E}^n \to \mathbb{R}
-\]
-definida por
-\[
-H(x_1,\dots,x_n)=h_1(x_1)\,h_2(x_2)\cdots h_n(x_n).
-\]
-
-Luego,
-\[
-\E\left[\prod_{i=1}^n h_i(X_i)\right]
-=
-\E\big(H(X_1,\dots,X_n)\big).
-\]
-
-Por el Teorema del Transporte,
+Diremos que \(x^\star\in \Omega\) es una \emph{solución óptima} si
 \[
-\E\big(H(X_1,\dots,X_n)\big)
-=
-\int_{\mathcal{E}^n} H(x_1,\dots,x_n)\,dP_{(X_1,\dots,X_n)}(x_1,\dots,x_n).
+f(x^\star)\le f(x)\qquad \forall x\in \Omega.
 \]
 
-Como $X_1,\dots,X_n$ son independientes,
+De manera análoga, un problema de maximización se escribe como
 \[
-P_{(X_1,\dots,X_n)}
-=
-P_{X_1}\otimes\cdots\otimes P_{X_n}.
+\max\{f(x):x\in \Omega\}.
 \]
 
-Por lo tanto,
-\[
-\int_{\mathcal{E}^n} H(x_1,\dots,x_n)\,dP_{(X_1,\dots,X_n)}
-=
-\int_{\mathcal{E}^n} h_1(x_1)\cdots h_n(x_n)\,d(P_{X_1}\otimes\cdots\otimes P_{X_n}).
-\]
-
-Aplicando Tonelli--Fubini,
-\[
-\int_{\mathcal{E}^n} h_1(x_1)\cdots h_n(x_n)\,d(P_{X_1}\otimes\cdots\otimes P_{X_n})
-\]
-\[
-=
-\int_{\mathcal{E}} h_1(x_1)\,dP_{X_1}(x_1)\cdots
-\int_{\mathcal{E}} h_n(x_n)\,dP_{X_n}(x_n).
-\]
-
-Finalmente, para cada $i$,
-\[
-\int_{\mathcal{E}} h_i(x_i)\,dP_{X_i}(x_i)=\E[h_i(X_i)].
-\]
-
-Así,
-\[
-\E\left[\prod_{i=1}^n h_i(X_i)\right]
-=
-\prod_{i=1}^n \E[h_i(X_i)].
-\]
-\hfill $\square$
-
-\medskip
-
-\noindent
-\textbf{Observación:} el resultado sigue siendo válido si
-\[
-\E[|h_i(X_i)|]<\infty,
-\qquad i=1,\dots,n.
-\]
-En ese caso,
-\[
-\E\left[\prod_{i=1}^n |h_i(X_i)|\right]
-=
-\prod_{i=1}^n \E[|h_i(X_i)|]
-<\infty,
-\]
-por lo que el producto es integrable y puede aplicarse Fubini.
-
-\medskip
-
-\noindent
-\textbf{Corolario:} si $X\perp Y$ y $X,Y\in L^2$, entonces
-\[
-\Cov(X,Y)=0.
-\]
-
-\textbf{Demostración:} por independencia,
-\[
-\E[XY]=\E[X]\E[Y].
-\]
-Luego,
-\[
-\Cov(X,Y)=\E[XY]-\E[X]\E[Y]=0.
-\]
-\hfill $\square$
-
-\medskip
-
-\noindent
-\textbf{Última observación:} la recíproca es falsa en general:
-\[
-\Cov(X,Y)=0 \not\implies X\perp Y.
-\]
-
-\subsubsection*{Recordatorio}
-
-Recordemos que, si $X:\Omega\to\mathbb{R}$ es una variable aleatoria y $h:\mathbb{R}\to\mathbb{R}$ es medible, entonces
-\[
-\E[h(X)] = \int_{\mathbb{R}} h(x)\,P_X(dx),
-\]
-siempre que la integral esté bien definida.
-
-\medskip
-
-\noindent
-\textbf{(1) Caso absolutamente continuo.}  
-Si $X$ es absolutamente continua, entonces existe una densidad $f_X$ tal que
-\[
-P_X(dx)=f_X(x)\,dx.
-\]
-Luego,
-\[
-\E[h(X)]
-=
-\int_{\mathbb{R}} h(x)\,P_X(dx)
-=
-\int_{\mathbb{R}} h(x)f_X(x)\,dx.
-\]
-
-\medskip
-
-\noindent
-\textbf{(2) Caso discreto.}  
-Si la ley de $X$ es discreta, por ejemplo con soporte en $\mathbb{N}$, entonces
-\[
-P_X(dx)=\sum_{k\in\mathbb{N}} P(X=k)\,\delta_k(dx).
-\]
-Por lo tanto,
-\[
-\E[h(X)]
-=
-\int_{\mathbb{R}} h(x)\,P_X(dx)
-\]
-\[
-=
-\int_{\mathbb{R}} h(x)\left(\sum_{k\in\mathbb{N}} P(X=k)\,\delta_k(dx)\right).
-\]
-Intercambiando suma e integral,
-\[
-\E[h(X)]
-=
-\sum_{k\in\mathbb{N}} P(X=k)\int_{\mathbb{R}} h(x)\,\delta_k(dx).
-\]
-Como
-\[
-\int_{\mathbb{R}} h(x)\,\delta_k(dx)=h(k),
-\]
-se obtiene
-\[
-\E[h(X)]
-=
-\sum_{k\in\mathbb{N}} h(k)\,P(X=k).
-\]
-
-
-
-\subsection{Función característica}
-
-Sea $X$ una variable aleatoria con valores en $\mathbb{R}^d$, es decir,
-\[
-X=(X_1,\dots,X_d).
-\]
-
-La \textbf{función característica} de $X$ es la función
-\[
-\varphi_X:\mathbb{R}^d\to\mathbb{C}
-\]
-definida por
-\[
-\varphi_X(t)=\E\big(e^{i\langle t,X\rangle}\big),
-\qquad t\in\mathbb{R}^d.
-\]
-
-Si $t=(t_1,\dots,t_d)$, entonces
-\[
-\langle t,X\rangle=\sum_{j=1}^d t_jX_j,
-\]
-y por lo tanto
-\[
-\varphi_X(t)
-=
-\E\left(\exp\left(i\sum_{j=1}^d t_jX_j\right)\right).
-\]
-
-\medskip
-
-\noindent
-\textbf{Observación:} la función característica puede verse como una versión probabilística de la transformada de Fourier de la ley de $X$, pues
-\[
-\varphi_X(t)=\int_{\mathbb{R}^d} e^{i\langle t,x\rangle}\,P_X(dx).
-\]
-
-\subsubsection*{Casos particulares}
-
-\textbf{Si $X$ tiene densidad $f_X$ en $\mathbb{R}^d$, entonces}
-\[
-\varphi_X(t)
-=
-\int_{\mathbb{R}^d} e^{i\langle t,x\rangle}f_X(x)\,dx.
-\]
-
-\textbf{Si $X$ es discreta con valores $x_k\in\mathbb{R}^d$, entonces}
-\[
-\varphi_X(t)
-=
-\sum_k e^{i\langle t,x_k\rangle}P(X=x_k).
-\]
-
-\subsubsection*{Observación}
-
-Si $X$ es una variable aleatoria real, entonces su función característica viene dada por
-\[
-\varphi_X(t)=\E(e^{itX})=\int_{\mathbb{R}} e^{itx}\,P_X(dx).
-\]
-
-Si además $X$ es absolutamente continua con densidad $f_X$, entonces
-\[
-P_X(dx)=f_X(x)\,dx,
-\]
-y por lo tanto
-\[
-\varphi_X(t)
-=
-\int_{\mathbb{R}} e^{itx}\,P_X(dx)
-=
-\int_{\mathbb{R}} e^{itx}f_X(x)\,dx.
-\]
-
-\subsubsection*{Ejemplos}
-
-\textbf{(1) Si $X\sim \mathrm{Bernoulli}(p)$, entonces}
-\[
-\varphi_X(t)=\E(e^{itX}).
-\]
-Como $X$ solo puede tomar los valores $0$ y $1$, se tiene
-\[
-\varphi_X(t)
-=
-e^{it}\,P(X=1)+e^{i0t}\,P(X=0)
-=
-pe^{it}+(1-p).
-\]
-Es decir,
-\[
-\varphi_X(t)=(1-p)+pe^{it}.
-\]
-
-\medskip
-
-\textbf{(2) Si $Y\sim \mathrm{Binomial}(N,p)$, entonces}
-
-Recordemos que una variable binomial puede escribirse como suma de variables Bernoulli i.i.d.:
-\[
-Y=\sum_{j=1}^{N} Z_j,
-\qquad Z_j \stackrel{\mathrm{i.i.d.}}{\sim} \mathrm{Bernoulli}(p).
-\]
-
-Luego,
-\[
-\varphi_Y(t)=\E(e^{itY})
-=
-\E\left(e^{it\sum_{j=1}^{N} Z_j}\right)
-=
-\E\left(\prod_{j=1}^{N} e^{itZ_j}\right).
-\]
-
-Como las variables $Z_1,\dots,Z_N$ son independientes, se obtiene
-\[
-\varphi_Y(t)
-=
-\prod_{j=1}^{N}\E(e^{itZ_j})
-=
-\prod_{j=1}^{N}\varphi_{Z_j}(t).
-\]
-
-Como todas tienen la misma ley Bernoulli$(p)$,
-\[
-\varphi_Y(t)=\big(\varphi_{Z_1}(t)\big)^N
-=
-\big((1-p)+pe^{it}\big)^N.
-\]
-
-Por tanto,
-\[
-\varphi_Y(t)=\big((1-p)+pe^{it}\big)^N.
-\]
+\subsection{Ejemplos donde no necesariamente existe minimizador}
 
-\medskip
-
-\textbf{(3) Si $Z\sim \mathcal{N}(0,1)$, queremos calcular $\varphi_Z(t)$.}
-
-Más generalmente, si
-\[
-W\sim \mathcal{N}(m,\sigma^2),
-\]
-entonces puede escribirse como
-\[
-W=m+\sigma Z,
-\qquad Z\sim \mathcal{N}(0,1).
-\]
-
-Así,
-\[
-\varphi_W(t)=\E(e^{itW})
-=
-\E\big(e^{it(m+\sigma Z)}\big)
-=
-e^{imt}\E(e^{i\sigma t Z}).
-\]
-
-Por definición de función característica,
-\[
-\E(e^{i\sigma t Z})=\varphi_Z(\sigma t).
-\]
-
-Luego,
-\[
-\varphi_W(t)=e^{imt}\varphi_Z(\sigma t).
-\]
-
-\noindent
-Ahora bien, si $Z\sim \mathcal{N}(0,1)$, entonces
-\[
-\varphi_Z(t)=e^{-t^2/2}.
-\]
-
-Por consiguiente, si $W\sim \mathcal{N}(m,\sigma^2)$, se obtiene
-\[
-\varphi_W(t)=e^{imt}\varphi_Z(\sigma t)
-=
-e^{imt}e^{-\sigma^2 t^2/2}.
-\]
-
-Es decir,
-\[
-\varphi_W(t)=\exp\left(imt-\frac{\sigma^2 t^2}{2}\right).
-\]
-
-\medskip
-
-\noindent
-\textbf{Observación:} a diferencia de la función generadora de momentos
-\[
-M_X(t)=\E(e^{tX}),
-\]
-la función característica siempre está bien definida, pues
-\[
-|e^{itX}|=1.
-\]
-Por lo tanto,
+\paragraph{Ejemplo 1.}
+Considérese
 \[
-|\varphi_X(t)|=\left|\E(e^{itX})\right|\leq \E(|e^{itX}|)=1.
+\min\{\tan(x):x\in (-\pi/2,\pi/2)\}.
 \]
-En cambio, la función generadora de momentos puede no existir para todo \(t\).
-
-\begin{teo}[Unicidad de la función característica]
-Sean \(X\) e \(Y\) variables aleatorias con valores en \(\mathbb{R}^d\). Si
-\[
-\varphi_X(t)=\varphi_Y(t), \qquad \forall t\in\mathbb{R}^d,
-\]
-entonces
+La función es continua en su dominio, pero el problema no tiene minimizador, porque
 \[
-P_X=P_Y.
+\tan(x)\to -\infty \qquad \text{cuando } x\to -\frac{\pi}{2}^{+}.
 \]
-\end{teo}
-
-\medskip
-
-\noindent
-\textbf{Proposición:} sea \(X\) una variable aleatoria real.
+Es decir, el ínfimo no se alcanza.
 
-\begin{itemize}
-\item[(1)] Si \(k\in\mathbb{N}\) y
+\paragraph{Ejemplo 2.}
+Considérese
 \[
-\E(|X|^k)<\infty,
+\min\{-10+e^x:x\in \mathbb{R}\}.
 \]
-entonces \(\varphi_X\) es \(k\)-veces derivable y, para todo \(j=1,\dots,k\),
-\[
-\varphi_X^{(j)}(t)=\E\big((iX)^j e^{itX}\big).
-\]
-En particular,
-\[
-\varphi_X^{(j)}(0)=i^j \E(X^j), \qquad j=1,\dots,k.
-\]
-
-\item[(2)] Recíprocamente, si \(\varphi_X\) es \(k\)-veces derivable en un entorno de \(0\), con \(k\) par, entonces
+Aquí
 \[
-\E(|X|^k)<\infty,
+-10+e^x>-10\qquad \forall x\in \mathbb{R},
 \]
 y además
 \[
-\E(X^j)=(-i)^j\varphi_X^{(j)}(0), \qquad j=1,\dots,k.
+-10+e^x\to -10 \qquad \text{cuando } x\to -\infty.
 \]
-\end{itemize}
+Luego
+\[
+\inf_{x\in\mathbb{R}}(-10+e^x)=-10,
+\]
+pero ese valor no se alcanza en ningún \(x\in\mathbb{R}\). Por tanto, tampoco hay minimizador.
 
-\subsection{Esperanza condicional}
+\medskip
 
-La esperanza condicional se define de manera natural a partir del Teorema de Radon--Nikodym.
+Estos ejemplos muestran que la continuidad por sí sola no garantiza existencia de solución óptima.
 
-\begin{defi}[Esperanza condicional respecto de una \(\sigma\)-álgebra]
-Sea \(X\in L^1(\Omega,\mathcal{F},P)\) y sea \(\mathcal{G}\subseteq\mathcal{F}\) una sub-\(\sigma\)-álgebra. Diremos que una variable aleatoria \(Y\) es una \textbf{esperanza condicional} de \(X\) respecto de \(\mathcal{G}\) si:
+\subsection{Teorema de Weierstrass y existencia de soluciones}
+
+\begin{theorem}[Weierstrass]
+Si \(S\subseteq \mathbb{R}^n\) es no vacío y compacto, y \(f:S\to \mathbb{R}\) es continua, entonces \(f\) alcanza su mínimo y su máximo en \(S\).
+\end{theorem}
+
+En particular, si el conjunto factible es compacto, el problema
+\[
+\min\{f(x):x\in S\}
+\]
+tiene solución.
+
+\paragraph{Subniveles.}
+Para \(\alpha\in \mathbb{R}\), el subnivel de \(f\) asociado a \(\alpha\) es
+\[
+L_\alpha(f)=\{x\in S:f(x)\le \alpha\}.
+\]
+
+\begin{remark}
+Si existe \(\alpha\in\mathbb{R}\) tal que \(L_\alpha(f)\neq \varnothing\) y \(L_\alpha(f)\) es compacto, entonces \(f\) alcanza su mínimo sobre \(S\).
+\end{remark}
+
+\subsection{Coercividad}
+
+\begin{definition}
+Una función \(f:\mathbb{R}^n\to \mathbb{R}\) es \emph{coerciva} si
+\[
+\|x\|\to\infty \quad \Longrightarrow \quad f(x)\to\infty.
+\]
+\end{definition}
+
+La coercividad impide que los valores pequeños de la función se escapen hacia infinito.
+
+\begin{proposition}
+Si \(S\subseteq \mathbb{R}^n\) es cerrado, \(f:S\to \mathbb{R}\) es continua y coerciva, entonces el problema
+\[
+\min\{f(x):x\in S\}
+\]
+tiene solución.
+\end{proposition}
+
+\paragraph{Ejemplo: problema de proyección.}
+Dado \(y\in\mathbb{R}^n\) y un conjunto no vacío y cerrado \(S\subseteq\mathbb{R}^n\), consideramos
+\[
+\min\{\|x-y\|:x\in S\}.
+\]
+La función \(x\mapsto \|x-y\|\) es continua y coerciva, por lo que existe al menos un minimizador en \(S\).
+
+\subsection{El simplex}
+
+Aparece frecuentemente el conjunto
+\[
+\Delta_n=\left\{(x_1,\dots,x_n)\in \mathbb{R}_{\ge 0}^n:\sum_{i=1}^n x_i=1\right\}.
+\]
+
+\begin{remark}
 \begin{itemize}
-\item \(Y\) es \(\mathcal{G}\)-medible,
-\item para todo \(A\in\mathcal{G}\),
-\[
-\int_A X(\omega)\,dP(\omega)=\int_A Y(\omega)\,dP(\omega).
-\]
+    \item \(\Delta_n\) es cerrado, porque es la intersección del hiperplano
+    \[
+    \left\{x\in\mathbb{R}^n:\sum_{i=1}^n x_i=1\right\}
+    \]
+    con el ortante \(\mathbb{R}_{\ge 0}^n\).
+    \item \(\Delta_n\) es acotado, pues si \(x\in\Delta_n\), entonces
+    \[
+    0\le x_i\le 1 \qquad \forall i=1,\dots,n.
+    \]
+    \item Por tanto, \(\Delta_n\) es compacto.
 \end{itemize}
-\end{defi}
+\end{remark}
 
-En ese caso escribimos
-\[
-Y=\E(X\mid\mathcal{G}).
-\]
+\section{Convexidad}
 
-Equivalentemente, la condición anterior puede escribirse como
-\[
-\E(X\mathbb{1}_A)=\E\big(\E(X\mid\mathcal{G})\mathbb{1}_A\big),
-\qquad \forall A\in\mathcal{G}.
-\]
+\subsection{Conjuntos convexos}
 
-\begin{teo}[Existencia y unicidad]
-Si \(X\in L^1(\Omega,\mathcal{F},P)\) y \(\mathcal{G}\subseteq\mathcal{F}\) es una sub-\(\sigma\)-álgebra, entonces existe una variable aleatoria
+\begin{definition}
+Un conjunto \(C\subseteq\mathbb{R}^n\) es \emph{convexo} si para todo \(x,y\in C\) y todo \(\lambda\in[0,1]\) se tiene
 \[
-\E(X\mid\mathcal{G})
+\lambda x+(1-\lambda)y\in C.
 \]
-y es única casi seguramente.
-\end{teo}
+\end{definition}
 
-\medskip
+Es decir, si dos puntos están en \(C\), entonces todo el segmento que los une también está en \(C\).
 
-\noindent
-\textbf{Idea de la construcción:} definimos una medida con signo sobre \(\mathcal{G}\) mediante
-\[
-\mu(A)=\int_A X\,dP, \qquad A\in\mathcal{G}.
-\]
-Entonces \(\mu\ll P|_{\mathcal{G}}\), y por Radon--Nikodym existe una variable aleatoria \(\mathcal{G}\)-medible \(Y\) tal que
-\[
-\mu(A)=\int_A Y\,dP, \qquad \forall A\in\mathcal{G}.
-\]
-Esa variable es precisamente \(\E(X\mid\mathcal{G})\).
+\subsection{Funciones convexas}
 
-\subsubsection*{Primeros ejemplos}
+Sea \(C\subseteq\mathbb{R}^n\) convexo.
 
-\begin{itemize}
-\item Si
+\begin{definition}
+Una función \(f:C\to \mathbb{R}\) es \emph{convexa} si
 \[
-\mathcal{G}=\{\varnothing,\Omega\},
+f(\lambda x+(1-\lambda)y)\le \lambda f(x)+(1-\lambda)f(y)
+\qquad \forall x,y\in C,\ \forall \lambda\in[0,1].
 \]
-entonces toda variable \(\mathcal{G}\)-medible es constante casi seguramente, y se obtiene
-\[
-\E(X\mid\mathcal{G})=\E(X).
-\]
+\end{definition}
 
-\item Si
-\[
-\mathcal{G}=\mathcal{F},
-\]
-entonces \(X\) es \(\mathcal{G}\)-medible, por lo que
-\[
-\E(X\mid\mathcal{F})=X.
-\]
-\end{itemize}
+\begin{remark}
+En un problema convexo, tanto el conjunto factible como la función objetivo tienen una estructura geométrica favorable. Esta es una de las razones por las que la optimización convexa es mucho más tratable que la optimización combinatoria en general.
+\end{remark}
 
-\subsubsection*{Propiedades}
+\subsection{Notación diferencial}
 
-Sea \(X,Y\in L^1(\Omega,\mathcal{F},P)\) y sea \(\mathcal{G}\subseteq\mathcal{F}\) una sub-\(\sigma\)-álgebra.
+En \(\mathbb{R}^n\), para una función suficientemente regular \(f\), usaremos
+\[
+\nabla f(x)=\left(\frac{\partial f}{\partial x_1}(x),\dots,\frac{\partial f}{\partial x_n}(x)\right)
+\]
+para el gradiente, y
+\[
+\nabla^2 f(x)=\left(\frac{\partial^2 f}{\partial x_i\partial x_j}(x)\right)_{i,j=1}^n
+\]
+para la Hessiana.
 
-\begin{itemize}
-\item[(1)] \textbf{Monotonía.} Si
-\[
-X\leq Y \quad \text{casi seguramente},
-\]
-entonces
-\[
-\E(X\mid\mathcal{G})\leq \E(Y\mid\mathcal{G})
-\quad \text{casi seguramente}.
-\]
+\section{Optimización combinatoria: el problema \emph{Max-Cut}}
 
-\item[(2)] \textbf{Esperanza total.}
-\[
-\E\big(\E(X\mid\mathcal{G})\big)=\E(X).
-\]
+Sea \(G=(V,E)\) un grafo, con \(V=[n]=\{1,\dots,n\}\). Queremos particionar los nodos en dos clases \(S\) y \(V\setminus S\), maximizando la cantidad de aristas que cruzan entre ambas partes.
 
-\item[(3)] \textbf{Si \(X\) es \(\mathcal{G}\)-medible, entonces}
-\[
-\E(X\mid\mathcal{G})=X
-\quad \text{casi seguramente}.
-\]
-En particular,
-\[
-\E(X\mid\mathcal{F})=X.
-\]
+\subsection{Codificación con variables \(\{-1,1\}\)}
 
-\item[(4)] \textbf{Linealidad.} Si \(\alpha,\beta\in\mathbb{R}\), entonces
+Asignamos a cada vértice \(v\in V\) una variable
 \[
-\E(\alpha X+\beta Y\mid\mathcal{G})
-=
-\alpha \E(X\mid\mathcal{G})
-+
-\beta \E(Y\mid\mathcal{G}).
+x_v\in\{-1,1\},
 \]
-
-\item[(5)] \textbf{Sacar lo conocido.} Si \(Z\) es una variable aleatoria \(\mathcal{G}\)-medible y acotada, entonces
+definida por
 \[
-\E(ZX\mid\mathcal{G})=Z\,\E(X\mid\mathcal{G}).
-\]
-
-\item[(6)] \textbf{Propiedad de Jensen.} Si \(\phi:\mathbb{R}\to\mathbb{R}\) es convexa y \(\phi(X)\in L^1\), entonces
-\[
-\phi(\E(X\mid\mathcal{G}))
-\leq
-\E(\phi(X)\mid\mathcal{G})
-\quad \text{casi seguramente}.
-\]
-\end{itemize}
-
-\medskip
-
-\noindent
-\textbf{Observación:} tomando esperanza en Jensen, se recupera la desigualdad clásica
-\[
-\phi(\E(X))\leq \E(\phi(X)).
-\]
-
-En particular, tomando \(\phi(x)=x^2\), se obtiene
-\[
-(\E(X))^2\leq \E(X^2),
-\]
-y por lo tanto
-\[
-\Var(X)=\E(X^2)-(\E(X))^2\geq 0.
-\]
-
-\medskip
-
-\noindent
-\textbf{Propiedad de la torre:} si
-\[
-\mathcal{H}\subseteq\mathcal{G}\subseteq\mathcal{F},
-\]
-entonces
-\[
-\E\big(\E(X\mid\mathcal{G})\mid\mathcal{H}\big)=\E(X\mid\mathcal{H}).
-\]
-Además, como \(\E(X\mid\mathcal{H})\) es \(\mathcal{H}\)-medible y \(\mathcal{H}\subseteq\mathcal{G}\), se tiene
-\[
-\E\big(\E(X\mid\mathcal{H})\mid\mathcal{G}\big)=\E(X\mid\mathcal{H}).
-\]
-
-\medskip
-
-\noindent
-\textbf{Observación en \(L^2\):} si \(X\in L^2(\Omega,\mathcal{F},P)\), entonces
-\[
-\E(X\mid\mathcal{G})\in L^2(\Omega,\mathcal{G},P),
-\]
-y más aún,
-\[
-\E(X\mid\mathcal{G})
-=
-\operatorname{Proj}_{L^2(\Omega,\mathcal{G},P)}(X),
-\]
-es decir, la esperanza condicional es la proyección ortogonal de \(X\) sobre el subespacio \(L^2(\Omega,\mathcal{G},P)\).
-
-\medskip
-
-\noindent
-\textbf{Observación:} si \(X\) es independiente de \(\mathcal{G}\), entonces
-\[
-\E(X\mid\mathcal{G})=\E(X).
-\]
-
-\subsubsection*{Condicionar respecto de una variable aleatoria}
-
-Si \(Y\) es una variable aleatoria real, denotamos por
-\[
-\sigma(Y)
-\]
-la menor \(\sigma\)-álgebra que hace a \(Y\) medible. En ese caso escribimos
-\[
-\E(X\mid Y)
-\quad \text{en lugar de} \quad
-\E(X\mid \sigma(Y)).
-\]
-
-\begin{teo}[Doob--Dynkin]
-Si \(X\) es una variable aleatoria \(\sigma(Y)\)-medible, entonces existe una función medible
-\[
-f:\mathbb{R}\to\mathbb{R}
-\]
-tal que
-\[
-X=f(Y)
-\quad \text{casi seguramente}.
-\]
-\end{teo}
-
-Como \(\E(X\mid Y)\) es \(\sigma(Y)\)-medible, el teorema anterior implica que existe una función medible \(f\) tal que
-\[
-\E(X\mid Y)=f(Y).
-\]
-
-Muchas veces, de manera informal, se escribe
-\[
-\E(X\mid Y=y)=f(y),
-\]
-entendiendo que se ha escogido una versión de \(\E(X\mid Y)\) de la forma \(f(Y)\).
-
-\subsubsection*{Cálculo mediante la ley de \(Y\)}
-
-Usando la propiedad de la esperanza total,
-\[
-\E(X)=\E\big(\E(X\mid Y)\big).
-\]
-
-Si \(Y\) es discreta con soporte \(\{y_k\}_{k\in I}\), entonces
-\[
-\E(X)=\sum_{k\in I} \E(X\mid Y=y_k)\,P(Y=y_k).
-\]
-
-Si \(Y\) es absolutamente continua con densidad \(f_Y\), entonces
-\[
-\E(X)=\int_{\mathbb{R}} \E(X\mid Y=y)\,f_Y(y)\,dy.
-\]
-
-\subsubsection*{Ejemplo}
-
-Sea
-\[
-Y\sim \mathcal{U}(0,1),
-\]
-y supongamos que, condicionado a \(Y=y\), la variable \(X\) satisface
-\[
-X=
+x_v=
 \begin{cases}
-1, & \text{con probabilidad } y,\\
-0, & \text{con probabilidad } 1-y.
+1, & \text{si } v\in S,\\
+-1, & \text{si } v\in V\setminus S.
 \end{cases}
 \]
 
-Entonces, para cada \(y\in(0,1)\),
-\[
-\E(X\mid Y=y)=y.
-\]
-Por lo tanto,
-\[
-\E(X\mid Y)=Y.
-\]
-
-Aplicando esperanza total,
-\[
-\E(X)=\E\big(\E(X\mid Y)\big)=\E(Y).
-\]
-
-Como \(Y\sim \mathcal{U}(0,1)\),
-\[
-\E(Y)=\int_0^1 y\,dy=\frac12.
-\]
-
-En consecuencia,
-\[
-\E(X)=\frac12.
-\] 
-
-\medskip
-
-\noindent
-\textbf{Recordatorio:} si \(Y\) es una variable aleatoria discreta y \(y\) satisface \(P(Y=y)>0\), entonces puede escribirse
-\[
-\E(X\mid Y=y)
-=
-\frac{\E(X\mathbb{1}_{\{Y=y\}})}{P(Y=y)}.
-\]
-
-\medskip
-
-\noindent
-Además, si \(\{B_u\}_{u\in I}\) es una partición medible de \(\Omega\) con \(P(B_u)>0\), entonces para todo evento \(A\in\mathcal{F}\),
-\[
-P(A)=\sum_{u\in I} P(A\mid B_u)\,P(B_u),
-\]
-que es la fórmula de probabilidades totales.
-
-\medskip
-
-\noindent
-\textbf{Interpretación:} la variable aleatoria \(\E(X\mid Y)\) representa la mejor predicción de \(X\) cuando se conoce la información contenida en \(Y\).
-
-\medskip
-
-\noindent
-\textbf{Recordemos algunas identidades básicas:}
+Entonces, para una arista \((u,v)\in E\):
 \begin{itemize}
-\item[(1)] 
-\[
-\E(X)=\E(X\mid \{\varnothing,\Omega\}).
-\]
-
-\item[(2)] 
-\[
-\E(X\mid \mathcal{F})=X.
-\]
-
-\item[(3)] \(\E(X\mid Y)\) es una variable aleatoria \(\sigma(Y)\)-medible.
-
-\item[(4)] Si existe una versión de \(\E(X\mid Y)\) de la forma \(f(Y)\), entonces se escribe informalmente
-\[
-\E(X\mid Y=y)=f(y).
-\]
-
-\item[(5)] Se tiene la fórmula de la esperanza total:
-\[
-\E(X)=\E(\E(X\mid Y)).
-\]
-Más explícitamente, si existe una versión \(y\mapsto \E(X\mid Y=y)\), entonces
-\[
-\E(X)=\int_{\mathbb{R}} \E(X\mid Y=y)\,P_Y(dy).
-\]
+    \item si \(x_ux_v=-1\), los extremos están en lados distintos y la arista cruza el corte;
+    \item si \(x_ux_v=1\), los extremos están en el mismo lado y la arista no cruza el corte.
 \end{itemize}
 
-\subsubsection*{Ejemplo}
-
-Sea
-\[
-Y\sim \mathcal{U}(0,1),
-\]
-y supongamos que, condicionado a \(Y=y\), la variable \(X\) verifica
-\[
-X=
-\begin{cases}
-1, & \text{con probabilidad } y,\\
-0, & \text{con probabilidad } 1-y.
-\end{cases}
-\]
-
-Entonces
-\[
-\E(X\mid Y=y)=y.
-\]
-Por lo tanto,
-\[
-\E(X\mid Y)=Y.
-\]
-Luego, por la fórmula de la esperanza total,
-\[
-\E(X)=\E(\E(X\mid Y))=\E(Y)=\frac12.
-\]
-
-\medskip
-
-\noindent
-\textbf{Proposición:} si \(X\) e \(Y\) son variables aleatorias independientes, entonces
-\[
-\E(X\mid Y)=\E(X).
-\]
-
-\textbf{Demostración:} la variable \(\E(X)\) es constante, luego es \(\sigma(Y)\)-medible. Además, para todo \(A\in\sigma(Y)\),
-\[
-\E(X\mathbb{1}_A)=\E(X)\E(\mathbb{1}_A)=\E(X)P(A)
-=
-\E\big(\E(X)\mathbb{1}_A\big).
-\]
-Por unicidad casi segura de la esperanza condicional,
-\[
-\E(X\mid Y)=\E(X).
-\]
-\hfill \(\square\)
-
-\medskip
-
-\noindent
-Más generalmente, si \(Z\) es \(\sigma(Y)\)-medible y acotada, entonces
-\[
-\E(XZ\mid Y)=Z\,\E(X\mid Y).
-\]
-En particular, si además \(X\perp Y\), entonces
-\[
-\E(XZ\mid Y)=Z\,\E(X).
-\]
-
-\subsubsection*{Ejemplo}
-
-Sean \(X,Y\) variables aleatorias i.i.d.\ y definamos
-\[
-Z=X+Y.
-\]
-Queremos calcular \(\E(X\mid Z)\).
-
-Como \(X\) e \(Y\) tienen la misma ley y \(Z\) es simétrica en \(X\) e \(Y\), se tiene
-\[
-\E(X\mid Z)=\E(Y\mid Z).
-\]
-Por linealidad,
-\[
-\E(X+Y\mid Z)=\E(X\mid Z)+\E(Y\mid Z).
-\]
-Pero como \(Z=X+Y\) es \(\sigma(Z)\)-medible,
-\[
-\E(X+Y\mid Z)=Z.
-\]
-Entonces
-\[
-Z=2\,\E(X\mid Z),
-\]
-y por tanto
-\[
-\E(X\mid Z)=\frac{Z}{2}.
-\]
-
-\subsubsection*{Ejemplo}
-
-Sean \(X,Y\) variables aleatorias i.i.d.\ con ley \(\mathcal{U}(0,1)\), y definamos
-\[
-Z=\min\{X,Y\}.
-\]
-Queremos calcular \(\E(Z\mid X)\) y deducir \(\E(Z)\).
-
-Como \(Y\) es independiente de \(X\), para \(x\in[0,1]\) se tiene
-\[
-\E(Z\mid X=x)=\E(\min\{x,Y\}).
-\]
-Ahora,
-\[
-\min\{x,Y\}
-=
-\begin{cases}
-Y, & \text{si } Y\leq x,\\
-x, & \text{si } Y>x.
-\end{cases}
-\]
-Como \(Y\sim \mathcal{U}(0,1)\),
-\[
-\E(\min\{x,Y\})
-=
-\int_0^x y\,dy+\int_x^1 x\,dy
-=
-\frac{x^2}{2}+x(1-x)
-=
-x-\frac{x^2}{2}.
-\]
-Luego,
-\[
-\E(Z\mid X)=X-\frac{X^2}{2}.
-\]
-
-Aplicando esperanza total,
-\[
-\E(Z)=\E(\E(Z\mid X))
-=
-\E\left(X-\frac{X^2}{2}\right).
-\]
-Como \(X\sim \mathcal{U}(0,1)\),
-\[
-\E(X)=\frac12,
-\qquad
-\E(X^2)=\int_0^1 x^2\,dx=\frac13.
-\]
-Por consiguiente,
-\[
-\E(Z)=\frac12-\frac12\cdot\frac13=\frac13.
-\]
-
-\subsection{Modos de convergencia}
-
-Sean \((X_n)_{n\in\mathbb{N}}\) y \(X\) variables aleatorias con valores en \(\mathbb{R}^d\).
-
-\subsubsection*{(1) Convergencia casi segura}
-
-Decimos que
-\[
-X_n \xrightarrow{c.s.} X
-\]
-si
-\[
-P\big(\{\omega\in\Omega:\; X_n(\omega)\to X(\omega)\}\big)=1.
-\]
-
-Equivalentemente,
-\[
-P\left(\left\{\omega\in\Omega:\forall \varepsilon>0,\ \exists N(\omega)\in\mathbb{N}\ \text{tal que}\ n\geq N(\omega)\Rightarrow |X_n(\omega)-X(\omega)|<\varepsilon\right\}\right)=1.
-\]
-
-\medskip
-
-\noindent
-\textbf{Ejemplo:} si \((X_n)_{n\in\mathbb{N}}\) son i.i.d.\ y \(\E(|X_1|)<\infty\), entonces
-\[
-\frac1n\sum_{i=1}^n X_i \xrightarrow{c.s.} \E(X_1).
-\]
-Este es el contenido de la ley fuerte de los grandes números.
-
-\subsubsection*{(2) Convergencia en probabilidad}
-
-Decimos que
-\[
-X_n \xrightarrow{P} X
-\]
-si para todo \(\varepsilon>0\),
-\[
-P(|X_n-X|\geq \varepsilon)\xrightarrow[n\to\infty]{}0.
-\]
-
-\medskip
-
-\noindent
-\textbf{Observación:}
-\[
-X_n\xrightarrow{c.s.}X
-\quad\Longrightarrow\quad
-X_n\xrightarrow{P}X.
-\]
-
-\begin{prop}[Desigualdad de Markov]
-Sea \(Y\) una variable aleatoria real no negativa casi seguramente. Entonces, para todo \(a>0\),
-\[
-P(Y\geq a)\leq \frac{\E(Y)}{a}.
-\]
-\end{prop}
-
-\textbf{Demostración:} como \(Y\geq 0\) casi seguramente,
-\[
-\E(Y)=\int_\Omega Y\,dP \geq \int_{\{Y\geq a\}} Y\,dP.
-\]
-Pero en el conjunto \(\{Y\geq a\}\) se tiene \(Y\geq a\), así que
-\[
-\int_{\{Y\geq a\}} Y\,dP \geq a\,P(Y\geq a).
-\]
-Por lo tanto,
-\[
-\E(Y)\geq a\,P(Y\geq a),
-\]
-y de aquí se concluye que
-\[
-P(Y\geq a)\leq \frac{\E(Y)}{a}.
-\]
-\hfill \(\square\)
-
-\medskip
-
-\noindent
-\textbf{Corolario:} si \(Y\in L^p\) con \(p\geq 1\), entonces para todo \(a>0\),
-\[
-P(|Y|\geq a)\leq \frac{\E(|Y|^p)}{a^p}.
-\]
-
-\textbf{Demostración:} basta aplicar Markov a la variable no negativa \(|Y|^p\).
-\hfill \(\square\)
-
-\begin{prop}[Desigualdad de Chebyshev]
-Si \(X\in L^2\), entonces para todo \(\varepsilon>0\),
-\[
-P(|X-\E(X)|\geq \varepsilon)\leq \frac{\Var(X)}{\varepsilon^2}.
-\]
-\end{prop}
-
-\textbf{Demostración:} aplicamos Markov a la variable
-\[
-Y=(X-\E(X))^2,
-\]
-que es no negativa. Entonces
-\[
-P\big((X-\E(X))^2\geq \varepsilon^2\big)
-\leq
-\frac{\E\big((X-\E(X))^2\big)}{\varepsilon^2}
-=
-\frac{\Var(X)}{\varepsilon^2}.
-\]
-Como
+Por lo tanto, el indicador de que \((u,v)\) cruza el corte es
 \[
-\{(X-\E(X))^2\geq \varepsilon^2\}
-=
-\{|X-\E(X)|\geq \varepsilon\},
+\frac{1-x_ux_v}{2}.
 \]
-se concluye el resultado.
-\hfill \(\square\)
 
-\subsubsection*{Ejemplo: ley débil de los grandes números en \(L^2\)}
-
-Sean \((X_n)_{n\in\mathbb{N}}\) variables aleatorias i.i.d.\ con \(X_1\in L^2\), y definamos
-\[
-\overline{X}_n=\frac1n\sum_{i=1}^n X_i.
-\]
-Entonces
-\[
-\overline{X}_n\xrightarrow{P}\E(X_1).
-\]
-
-En efecto, por Chebyshev,
-\[
-P\big(|\overline{X}_n-\E(X_1)|\geq \varepsilon\big)
-\leq
-\frac{\Var(\overline{X}_n)}{\varepsilon^2}.
-\]
-Como las variables son i.i.d.,
-\[
-\Var(\overline{X}_n)
-=
-\Var\left(\frac1n\sum_{i=1}^n X_i\right)
-=
-\frac{1}{n^2}\sum_{i=1}^n \Var(X_i)
-=
-\frac{\Var(X_1)}{n}.
-\]
-Luego,
-\[
-P\big(|\overline{X}_n-\E(X_1)|\geq \varepsilon\big)
-\leq
-\frac{\Var(X_1)}{n\varepsilon^2}
-\xrightarrow[n\to\infty]{}0.
-\]
-Por tanto,
-\[
-\overline{X}_n\xrightarrow{P}\E(X_1).
-\]
-
-\subsubsection*{(3) Convergencia en \(L^p\)}
-
-Sea \(p\geq 1\). Diremos que
-\[
-X_n\xrightarrow{L^p}X
-\]
-si
-\[
-\E(|X_n-X|^p)\xrightarrow[n\to\infty]{}0.
-\]
-
-Equivalentemente,
-\[
-\|X_n-X\|_p\to 0,
-\qquad
-\text{donde }
-\|Z\|_p:=\big(\E(|Z|^p)\big)^{1/p}.
-\]
-
-\medskip
-
-\noindent
-\textbf{Observación:} si
-\[
-X_n\xrightarrow{L^p}X,
-\]
-entonces necesariamente \(X\in L^p\).
-
-\medskip
-
-\noindent
-Además, por el corolario de Markov,
-\[
-P(|X_n-X|\geq \varepsilon)
-\leq
-\frac{\E(|X_n-X|^p)}{\varepsilon^p}.
-\]
-Por lo tanto,
-\[
-X_n\xrightarrow{L^p}X
-\quad\Longrightarrow\quad
-X_n\xrightarrow{P}X.
-\]
-
-\begin{teo}[Convergencia dominada en \(L^p\)]
-Sea \(p\geq 1\). Si
-\[
-X_n\xrightarrow{c.s.}X
-\]
-y existe \(Y\in L^p\) tal que
-\[
-|X_n|\leq Y
-\quad \text{casi seguramente, para todo } n\in\mathbb{N},
-\]
-entonces
-\[
-X_n\xrightarrow{L^p}X.
-\]
-\end{teo}
-
-\textbf{Demostración:} como \(X_n\to X\) casi seguramente y \(|X_n|\leq Y\), se tiene también
-\[
-|X|\leq Y
-\quad \text{casi seguramente}.
-\]
-Luego,
-\[
-|X_n-X|^p\to 0
-\quad \text{casi seguramente}.
-\]
-Además,
-\[
-|X_n-X|^p \leq (|X_n|+|X|)^p \leq (2Y)^p.
-\]
-Como \(Y\in L^p\), se tiene \((2Y)^p\in L^1\). Aplicando el Teorema de Convergencia Dominada,
-\[
-\E(|X_n-X|^p)\to 0.
-\]
-Esto significa precisamente que
-\[
-X_n\xrightarrow{L^p}X.
-\]
-\hfill \(\square\)
-
-\medskip
-
-\noindent
-\textbf{Observación:} en particular, el caso \(p=1\) recupera la convergencia dominada clásica.
-
-\medskip
-
-\noindent
-\textbf{Otra consecuencia:} si \(X_n\xrightarrow{L^p}X\) con \(p\geq 1\), entonces
-\[
-\E(|X_n|^p)\to \E(|X|^p).
-\]
-En efecto, \(\|X_n-X\|_p\to 0\) implica \(\|X_n\|_p\to \|X\|_p\), y por ende
-\[
-\E(|X_n|^p)=\|X_n\|_p^p \to \|X\|_p^p=\E(|X|^p).
-\]
-
-\medskip
-
-\noindent
-Además, como estamos en un espacio de probabilidad, si \(p\geq 1\) entonces
-\[
-\|Z\|_1\leq \|Z\|_p.
-\]
-Por tanto,
-\[
-X_n\xrightarrow{L^p}X
-\quad\Longrightarrow\quad
-X_n\xrightarrow{L^1}X,
-\]
-y en consecuencia
-\[
-\E(X_n)\to \E(X).
-\]
-
-\subsubsection*{(4) Convergencia en ley}
-
-Diremos que
-\[
-X_n\xrightarrow{\mathcal{L}}X
-\]
-si para toda función continua y acotada
-\[
-f:\mathbb{R}^d\to\mathbb{R},
-\]
-se tiene
-\[
-\E(f(X_n))\xrightarrow[n\to\infty]{}\E(f(X)).
-\]
-
-Equivalentemente, la sucesión de leyes \(P_{X_n}\) converge débilmente hacia \(P_X\).
-
-\medskip
-
-\noindent
-\textbf{Observación:} la convergencia en ley también se denomina \textbf{convergencia débil de leyes}.
-
-\medskip
-
-\noindent
-\textbf{Observación:} si
-\[
-X_n\xrightarrow{P}X,
-\]
-entonces
-\[
-X_n\xrightarrow{\mathcal{L}}X.
-\]
-
-\medskip
-
-\noindent
-\textbf{Recordatorio:} denotamos por
-\[
-C_b(\mathbb{R}^d)
-=
-\left\{
-f:\mathbb{R}^d\to\mathbb{R}
-:\;
-f \text{ continua y acotada}
-\right\}.
-\]
-
-\begin{defi}[Convergencia débil de medidas]
-Sean \((\mu_n)_{n\in\mathbb{N}}\) y \(\mu\) medidas de probabilidad sobre \(\mathbb{R}^d\). Diremos que
-\[
-\mu_n \Rightarrow \mu
-\]
-si para toda \(f\in C_b(\mathbb{R}^d)\),
+Sumando sobre todas las aristas,
 \[
-\int_{\mathbb{R}^d} f(x)\,\mu_n(dx)
-\longrightarrow
-\int_{\mathbb{R}^d} f(x)\,\mu(dx).
+e(S,V\setminus S)=\sum_{(u,v)\in E}\frac{1-x_ux_v}{2}.
 \]
-\end{defi}
 
-\medskip
-
-\noindent
-Aplicando esta definición a las leyes de variables aleatorias, obtenemos que
-\[
-X_n\xrightarrow{\mathcal{L}}X
-\quad\Longleftrightarrow\quad
-P_{X_n}\Rightarrow P_X.
-\]
-
-\medskip
-
-\noindent
-Usaremos también la notación
-\[
-X_n \Rightarrow X
-\]
-para indicar convergencia en ley.
+\subsection{Formulación del problema}
 
-\begin{prop}[Teorema del mapeo continuo]
-Sea \(g:\mathbb{R}^d\to\mathbb{R}^{\ell}\) continua. Si
+Así, el problema \emph{Max-Cut} se escribe como
 \[
-X_n\xrightarrow{\mathcal{L}}X
-\quad \text{en } \mathbb{R}^d,
+\max \sum_{(u,v)\in E}\frac{1-x_ux_v}{2}
 \]
-entonces
+sujeto a
 \[
-g(X_n)\xrightarrow{\mathcal{L}}g(X)
-\quad \text{en } \mathbb{R}^{\ell}.
+x_v^2=1,\qquad \forall v\in V.
 \]
-\end{prop}
 
-\textbf{Plan de la demostración:} probar la convergencia de las esperanzas contra funciones prueba \(h\in C_b(\mathbb{R}^{\ell})\), observando que \(h\circ g\) sigue siendo continua y acotada.
+Esta formulación muestra que se trata de un problema de optimización combinatoria. En general, \emph{Max-Cut} es un problema NP-duro.
 
-\textbf{Demostración:} sea \(h\in C_b(\mathbb{R}^{\ell})\). Entonces
-\[
-h\circ g \in C_b(\mathbb{R}^d).
-\]
-Como \(X_n\xrightarrow{\mathcal{L}}X\), se tiene
-\[
-\E\big((h\circ g)(X_n)\big)\longrightarrow \E\big((h\circ g)(X)\big).
-\]
-Pero
-\[
-\E\big((h\circ g)(X_n)\big)=\E\big(h(g(X_n))\big),
-\qquad
-\E\big((h\circ g)(X)\big)=\E\big(h(g(X))\big).
-\]
-Luego,
-\[
-\E\big(h(g(X_n))\big)\longrightarrow \E\big(h(g(X))\big).
-\]
-Como esto vale para toda \(h\in C_b(\mathbb{R}^{\ell})\), concluimos que
-\[
-g(X_n)\xrightarrow{\mathcal{L}}g(X).
-\]
-\hfill \(\square\)
-
-\medskip
+\section{Programación lineal}
 
-\noindent
-\textbf{Observación:} en dimensión \(1\), la convergencia en ley puede caracterizarse mediante funciones de distribución.
+\subsection{Forma general}
 
-\begin{teo}[Caracterización en \(\mathbb{R}\)]
-Sean \(X_n\) y \(X\) variables aleatorias reales. Entonces
+Un problema lineal se escribe típicamente como
 \[
-X_n\xrightarrow{\mathcal{L}}X
+\min\{c^Tx:Ax\le b\}.
 \]
-si y solo si
-\[
-F_{X_n}(t)\longrightarrow F_X(t)
-\]
-para todo punto \(t\in\mathbb{R}\) en el cual \(F_X\) sea continua.
-\end{teo}
-
-\medskip
-
-\noindent
-Este resultado es una consecuencia del teorema de Portmanteau.
 
-\begin{teo}[Portmanteau]
-Sean \(X_n\) y \(X\) variables aleatorias con valores en \(\mathbb{R}^d\). Son equivalentes:
+Aquí:
 \begin{itemize}
-\item[(1)]
-\[
-X_n\xrightarrow{\mathcal{L}}X.
-\]
-
-\item[(2)] Para toda \(f\in C_b(\mathbb{R}^d)\),
-\[
-\E(f(X_n))\longrightarrow \E(f(X)).
-\]
-
-\item[(3)] Para todo conjunto cerrado \(F\subseteq\mathbb{R}^d\),
-\[
-\limsup_{n\to\infty} P(X_n\in F)\leq P(X\in F).
-\]
-
-\item[(4)] Para todo conjunto abierto \(G\subseteq\mathbb{R}^d\),
-\[
-\liminf_{n\to\infty} P(X_n\in G)\geq P(X\in G).
-\]
+    \item \(c^Tx\) es una función lineal,
+    \item el conjunto factible
+    \[
+    \{x\in\mathbb{R}^n:Ax\le b\}
+    \]
+    es un poliedro, y por lo tanto es convexo.
 \end{itemize}
-\end{teo}
 
-\medskip
+\subsection{Ejemplo gráfico en \(\mathbb{R}^2\)}
 
-\noindent
-En particular, en \(\mathbb{R}\), la convergencia en ley equivale a la convergencia puntual de las funciones de distribución en los puntos de continuidad de la ley límite.
-
-\subsection{Función característica y convergencia en ley}
-
-\begin{teo}[Teorema de continuidad de Lévy]
-Sean \((X_n)_{n\in\mathbb{N}}\) variables aleatorias con valores en \(\mathbb{R}^d\), y supongamos que existe una función
+Considérese el problema
 \[
-\varphi:\mathbb{R}^d\to\mathbb{C}
-\]
-tal que
-\[
-\varphi_{X_n}(t)\longrightarrow \varphi(t),
-\qquad \forall t\in\mathbb{R}^d.
-\]
-Si \(\varphi\) es continua en \(0\), entonces existe una variable aleatoria \(X\) con valores en \(\mathbb{R}^d\) tal que
-\[
-\varphi_X=\varphi
-\]
-y
-\[
-X_n\xrightarrow{\mathcal{L}}X.
-\]
-\end{teo}
-
-\medskip
-
-\noindent
-\textbf{Observación:} el recíproco también es cierto. Si
-\[
-X_n\xrightarrow{\mathcal{L}}X,
-\]
-entonces para todo \(t\in\mathbb{R}^d\),
-\[
-\varphi_{X_n}(t)\longrightarrow \varphi_X(t).
-\]
-
-\medskip
-
-\noindent
-Así, la convergencia de funciones características permite detectar convergencia en ley.
-
-\subsection{Teorema Central del Límite}
-
-\begin{teo}[Teorema Central del Límite]
-Sean \((X_i)_{i\in\mathbb{N}}\) variables aleatorias reales i.i.d.\ tales que
-\[
-\E(X_1)=\mu,
-\qquad
-\Var(X_1)=\sigma^2<\infty.
-\]
-Entonces
-\[
-\frac{1}{\sqrt{n}}\sum_{i=1}^{n}\frac{X_i-\mu}{\sigma}
-\xrightarrow{\mathcal{L}}
-Z,
+\max\{x_1+x_2:x\in F\},
 \]
 donde
 \[
-Z\sim \mathcal{N}(0,1).
+F=\left\{(x_1,x_2)\in\mathbb{R}^2:
+\begin{array}{l}
+x_1\ge 0,\\
+x_2\ge 0,\\
+x_2-x_1\le 1,\\
+x_1+6x_2\le 15,\\
+4x_1-x_2\le 10
+\end{array}
+\right\}.
 \]
-\end{teo}
 
-\medskip
-
-\noindent
-Equivalentemente, si
+Equivalentemente, podemos escribirlo como
 \[
-\overline{X}_n=\frac1n\sum_{i=1}^{n}X_i,
+\min\{-x_1-x_2:x\in F\}.
+\]
+
+\paragraph{Conjuntos de nivel.}
+Para la función objetivo \(u(x)=x_1+x_2\), sus conjuntos de nivel son las rectas
+\[
+N_\alpha=\{(x_1,x_2)\in\mathbb{R}^2:x_1+x_2=\alpha\}.
+\]
+
+La idea geométrica es desplazar la recta \(x_1+x_2=\alpha\) hasta el último valor de \(\alpha\) que todavía intersecta el conjunto factible.
+
+\paragraph{Cálculo del óptimo.}
+El óptimo se obtiene en la intersección de las restricciones activas
+\[
+x_1+6x_2=15,
+\qquad
+4x_1-x_2=10.
+\]
+Resolviendo,
+\[
+x_2=4x_1-10,
+\]
+y por tanto
+\[
+x_1+6(4x_1-10)=15
+\quad\Longrightarrow\quad
+25x_1=75
+\quad\Longrightarrow\quad
+x_1=3.
+\]
+Luego,
+\[
+x_2=2.
+\]
+
+Así,
+\[
+x^\star=(3,2),
+\qquad
+u(x^\star)=x_1^\star+x_2^\star=5.
+\]
+
+Por lo tanto,
+\[
+\max\{x_1+x_2:x\in F\}=5.
+\]
+
+\subsection{Problema de transporte}
+
+Consideremos dos fuentes \(F_1,F_2\) y tres destinos \(D_1,D_2,D_3\), con la siguiente matriz de costos unitarios:
+\[
+\begin{array}{c|ccc}
+ & D_1 & D_2 & D_3\\
+\hline
+F_1 & 2 & 1 & 3\\
+F_2 & 1 & 2 & 1
+\end{array}
+\]
+y con disponibilidades
+\[
+\mathrm{prod}(F_1)=10{,}000,\qquad \mathrm{prod}(F_2)=5{,}000,
+\]
+mientras que las demandas son
+\[
+\mathrm{dem}(D_j)=5{,}000,\qquad j=1,2,3.
+\]
+
+Si \(x_{ij}\) denota la cantidad enviada desde \(F_i\) hacia \(D_j\), el problema queda formulado como
+\[
+\min \; 2x_{11}+x_{21}+x_{12}+2x_{22}+3x_{13}+x_{23}
+\]
+sujeto a
+\[
+x_{11}+x_{21}=5{,}000,
+\]
+\[
+x_{12}+x_{22}=5{,}000,
+\]
+\[
+x_{13}+x_{23}=5{,}000,
+\]
+\[
+x_{11}+x_{12}+x_{13}=10{,}000,
+\]
+\[
+x_{21}+x_{22}+x_{23}=5{,}000,
+\]
+\[
+x_{ij}\ge 0,\qquad i=1,2,\; j=1,2,3.
+\]
+
+Aquí, las tres primeras restricciones corresponden a la demanda en los destinos, y las dos siguientes a la oferta en las fuentes.
+
+\subsection{Forma estándar (forma de igualdad)}
+
+La forma estándar de un problema lineal es
+\[
+\max \; c^Tx
+\]
+sujeto a
+\[
+Ax=b,\qquad x\ge 0.
+\]
+
+\subsection{Conversión a forma estándar}
+
+Considérese el ejemplo
+\[
+\max \; 3x_1-2x_2
+\]
+sujeto a
+\[
+2x_1-x_2\le 4,
+\]
+\[
+x_1+3x_2\ge 5,
+\]
+\[
+x_2\ge 0,
+\]
+y \(x_1\in\mathbb{R}\) libre.
+
+Para convertirlo a forma estándar:
+\begin{itemize}
+    \item A la restricción
+    \[
+    2x_1-x_2\le 4
+    \]
+    se le agrega una variable de holgura \(x_3\ge 0\):
+    \[
+    2x_1-x_2+x_3=4.
+    \]
+
+    \item A la restricción
+    \[
+    x_1+3x_2\ge 5
+    \]
+    se le resta una variable de exceso \(x_4\ge 0\):
+    \[
+    x_1+3x_2-x_4=5,
+    \]
+    o equivalentemente,
+    \[
+    -x_1-3x_2+x_4=-5.
+    \]
+
+    \item Como \(x_1\) es libre, se escribe como diferencia de dos variables no negativas:
+    \[
+    x_1=x_1^+-x_1^-,
+    \qquad
+    x_1^+,x_1^-\ge 0.
+    \]
+\end{itemize}
+
+Así, una formulación en forma estándar es
+\[
+\max \; 3x_1^+-3x_1^- -2x_2
+\]
+sujeto a
+\[
+2x_1^+-2x_1^- -x_2+x_3=4,
+\]
+\[
+-x_1^+ +x_1^- -3x_2+x_4=-5,
+\]
+\[
+x_1^+,x_1^-,x_2,x_3,x_4\ge 0.
+\]
+
+\subsection{Conjunto factible y convexidad}
+
+En adelante trabajaremos con problemas de la forma
+\[
+\max \; c^Tx
+\]
+sujeto a
+\[
+Ax=b,\qquad x\ge 0,
+\]
+donde \(A\in\mathbb{R}^{m\times n}\), con \(m\le n\), y usualmente se asume
+\[
+\rank(A)=m.
+\]
+
+El conjunto factible es
+\[
+F=\{x\in\mathbb{R}^n:Ax=b,\; x\ge 0\}.
+\]
+
+\begin{proposition}
+El conjunto factible \(F\) de un problema lineal en forma estándar es convexo.
+\end{proposition}
+
+\begin{proof}
+Sean \(x,y\in F\) y \(\lambda\in[0,1]\). Entonces
+\[
+Ax=b,\qquad Ay=b.
+\]
+Por linealidad,
+\[
+A(\lambda x+(1-\lambda)y)
+=\lambda Ax+(1-\lambda)Ay
+=\lambda b+(1-\lambda)b
+=b.
+\]
+Además, como \(x\ge 0\) e \(y\ge 0\), también se tiene
+\[
+\lambda x+(1-\lambda)y\ge 0.
+\]
+Luego
+\[
+\lambda x+(1-\lambda)y\in F.
+\]
+Por tanto, \(F\) es convexo.
+\end{proof}
+
+\subsection{Cono convexo generado por las columnas de \(A\)}
+
+Si \(a_1,\dots,a_n\in\mathbb{R}^m\) son las columnas de \(A\), entonces
+\[
+Ax=x_1a_1+\cdots+x_na_n.
+\]
+
+En particular,
+\[
+C_A:=\{Ax:x\ge 0\}
+\]
+es el cono convexo generado por las columnas de \(A\), es decir,
+\[
+C_A=\left\{\sum_{i=1}^n x_i a_i:\; x_i\ge 0\right\}.
+\]
+
+\begin{remark}
+El sistema
+\[
+Ax=b,\qquad x\ge 0
+\]
+tiene solución si y solo si
+\[
+b\in C_A.
+\]
+\end{remark}
+
+\section{Soluciones básicas factibles}
+
+Sea
+\[
+A\in\mathbb{R}^{m\times n},\qquad \rank(A)=m,
+\]
+y considérese el problema lineal
+\[
+(P)\qquad \max \; c^Tx
+\]
+sujeto a
+\[
+Ax=b,\qquad x\ge 0.
+\]
+
+\subsection{Submatrices determinadas por índices}
+
+Si \(B\subseteq[n]=\{1,\dots,n\}\), definimos:
+\begin{itemize}
+    \item \(A_B\): la submatriz formada por las columnas \(a_i\) de \(A\) con \(i\in B\),
+    \item \(x_B\): el subvector formado por las componentes \(x_i\) con \(i\in B\).
+\end{itemize}
+
+\paragraph{Ejemplo.}
+Si
+\[
+A=
+\begin{pmatrix}
+1&5&3&4&6\\
+0&1&3&5&6
+\end{pmatrix},
+\qquad
+B=\{2,4\},
 \]
 entonces
 \[
-\frac{\sqrt{n}\,(\overline{X}_n-\mu)}{\sigma}
-\xrightarrow{\mathcal{L}}
-\mathcal{N}(0,1).
+A_B=
+\begin{pmatrix}
+5&4\\
+1&5
+\end{pmatrix}.
 \]
 
-\medskip
-
-\noindent
-\textbf{Observación:} la normalización es natural, pues
+Si además
 \[
-\Var\left(\frac{1}{\sqrt{n}}\sum_{i=1}^{n}\frac{X_i-\mu}{\sigma}\right)=1.
+b=
+\begin{pmatrix}
+14\\
+7
+\end{pmatrix},
 \]
-En efecto, por independencia,
+la solución del sistema
 \[
-\Var\left(\sum_{i=1}^{n}(X_i-\mu)\right)
-=
-\sum_{i=1}^{n}\Var(X_i-\mu)
-=
-n\sigma^2.
+A_Bx_B=b
+\]
+es
+\[
+x_B=
+\begin{pmatrix}
+2\\
+1
+\end{pmatrix},
+\]
+y el vector correspondiente en \(\mathbb{R}^5\) es
+\[
+x=(0,2,0,1,0)^T.
+\]
+
+\subsection{Bases y soluciones básicas}
+
+\begin{definition}
+Un subconjunto \(B\subseteq[n]\) se llama una \emph{base} si
+\[
+|B|=m
+\]
+y la matriz \(A_B\) es invertible.
+\end{definition}
+
+Si \(B\) es una base y \(N=[n]\setminus B\), entonces la solución básica asociada a \(B\) se obtiene imponiendo
+\[
+x_N=0
+\]
+y resolviendo
+\[
+A_Bx_B=b.
+\]
+Como \(A_B\) es invertible,
+\[
+x_B=A_B^{-1}b.
+\]
+
+\begin{definition}
+Una solución básica \(x\) se llama \emph{solución básica factible} (SBF) si además satisface
+\[
+x\ge 0.
+\]
+\end{definition}
+
+\begin{remark}
+En una solución básica asociada a una base \(B\),
+\begin{itemize}
+    \item las variables \(x_i\), con \(i\in B\), se llaman \emph{variables básicas},
+    \item las variables \(x_j\), con \(j\in N=[n]\setminus B\), se llaman \emph{variables no básicas},
+\end{itemize}
+y estas últimas se fijan en cero.
+\end{remark}
+
+\begin{proposition}
+Una solución básica está completamente determinada por su base.
+\end{proposition}
+
+\begin{proof}
+Dada una base \(B\), se fija \(x_N=0\) y luego se resuelve
+\[
+A_Bx_B=b.
+\]
+Como \(A_B\) es invertible,
+\[
+x_B=A_B^{-1}b
+\]
+queda determinado de manera única.
+\end{proof}
+
+\subsection{Caracterización de las soluciones básicas factibles}
+
+Para \(x\in F\), definimos
+\[
+K=\{j\in[n]:x_j>0\}.
+\]
+
+\begin{proposition}
+Un punto factible \(x\in F\) es una solución básica factible si y solo si las columnas
+\[
+\{a_j:\; x_j>0\}
+\]
+son linealmente independientes.
+\end{proposition}
+
+\begin{proof}
+Supongamos primero que \(x\) es una SBF con base \(B\). Entonces
+\[
+x_j=0 \qquad \forall j\notin B.
 \]
 Por lo tanto,
 \[
-\Var\left(\frac{1}{\sqrt{n}}\sum_{i=1}^{n}\frac{X_i-\mu}{\sigma}\right)
-=
-\frac{1}{n\sigma^2}\,n\sigma^2
-=
-1.
+K\subseteq B.
 \]
+Como las columnas de \(A_B\) son linealmente independientes, también lo son las columnas \(\{a_j:j\in K\}\).
 
 \medskip
 
-\noindent
-\textbf{Comentario:} el TCL describe el comportamiento asintótico de las sumas centradas y reescaladas de variables i.i.d., y explica por qué la ley normal aparece de manera universal en probabilidad y estadística.
+Recíprocamente, supongamos que las columnas \(\{a_j:j\in K\}\) son linealmente independientes.
+
+Si \(|K|=m\), tomamos \(B=K\). Si \(|K|<m\), extendemos \(K\) a un conjunto \(B\subseteq[n]\) con \(|B|=m\) de manera que las columnas \(\{a_j:j\in B\}\) sigan siendo linealmente independientes. Esto es posible porque \(\rank(A)=m\).
+
+Así, \(A_B\) es invertible. Además, como \(x_j=0\) para todo \(j\notin K\), y en particular para todo \(j\notin B\), tenemos
+\[
+b=Ax=A_Bx_B.
+\]
+Luego \(x\) coincide con la solución básica asociada a la base \(B\). Como además \(x\ge 0\), resulta que \(x\) es una solución básica factible.
+\end{proof}
+
+\begin{corollary}
+El número de soluciones básicas factibles es finito.
+\end{corollary}
+
+\begin{proof}
+Solo hay una cantidad finita de subconjuntos \(B\subseteq[n]\) con \(|B|=m\), y cada base determina a lo más una solución básica factible.
+\end{proof}
+
+\section{Flujo en redes}
+
+Sea
+\[
+G=(V,E)
+\]
+un grafo dirigido, donde:
+\begin{itemize}
+    \item \(V\) es el conjunto de vértices,
+    \item \(E\subseteq V\times V\) es el conjunto de arcos.
+\end{itemize}
+
+Como los arcos son pares ordenados, en general
+\[
+(u,v)\neq (v,u).
+\]
+
+A cada arco \(e\in E\) se le asigna una capacidad
+\[
+c_e\ge 0.
+\]
+
+\begin{definition}
+Un flujo en la red es una aplicación
+\[
+f:E\to \mathbb{R}_{\ge 0}
+\]
+tal que para todo \(e\in E\),
+\[
+0\le f(e)\le c_e.
+\]
+\end{definition}
+
+Si además se distinguen una fuente \(s\) y un sumidero \(t\), se busca enviar desde \(s\) hacia \(t\) la mayor cantidad posible de flujo. En ese contexto, en cada vértice intermedio \(v\in V\setminus\{s,t\}\) se impone conservación:
+\[
+\sum_{(u,v)\in E} f(u,v)=\sum_{(v,w)\in E} f(v,w).
+\]
+
+Este es el punto de partida del problema de máximo flujo.

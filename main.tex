@@ -61,18 +61,23 @@
 % ── Entornos de teoremas ─────────────────────────────────────────────────────
 \theoremstyle{definition}
 \newtheorem{defi}{Definición}[section]
+\newtheorem{definition}[defi]{Definición}
 \newtheorem{ejemplo}{Ejemplo}[section]
 \newtheorem{ejercicio}{Ejercicio}[section]
 
 \theoremstyle{plain}
 \newtheorem{teo}{Teorema}[section]
+\newtheorem{theorem}[teo]{Teorema}
 \newtheorem{prop}{Proposición}[section]
+\newtheorem{proposition}[prop]{Proposición}
 \newtheorem{lema}{Lema}[section]
 \newtheorem{cor}{Corolario}[section]
+\newtheorem{corollary}[cor]{Corolario}
 
 \theoremstyle{remark}
 \newtheorem*{obs}{Observación}
 \newtheorem*{nota}{Nota}
+\newtheorem*{remark}{Observación}
 
 % ── Cajas de color para resultados importantes ───────────────────────────────
 \newtcolorbox{resultado}[1][]{
@@ -101,6 +106,7 @@
 \newcommand{\indicator}[1]{\mathbf{1}_{#1}}   % función indicadora
 \newcommand{\abs}[1]{\left|#1\right|}
 \newcommand{\norm}[1]{\left\|#1\right\|}
+\DeclareMathOperator{\rank}{rank}
 
 %==============================================================================
 \begin{document}
