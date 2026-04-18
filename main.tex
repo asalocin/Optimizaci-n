@@ -1,0 +1,136 @@
+%==============================================================================
+% Apuntes de Inferencia Estadística — USACH 2026
+%==============================================================================
+\documentclass[12pt, a4paper, spanish]{article}
+
+% ── Codificación y lenguaje ──────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish, es-tabla]{babel}
+
+% ── Márgenes ────────────────────────────────────────────────────────────────
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
+
+% ── Matemáticas ─────────────────────────────────────────────────────────────
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage{bm}          % negrita en matemáticas (\bm{X})
+
+% ── Fuente (opcional: comentar para usar Computer Modern por defecto) ────────
+% \usepackage{lmodern}
+
+% ── Figuras y tablas ────────────────────────────────────────────────────────
+\usepackage{graphicx}
+\graphicspath{{figuras/}}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% ── Colores y cajas ─────────────────────────────────────────────────────────
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems, skins, breakable}
+
+% ── Hiperenlaces ─────────────────────────────────────────────────────────────
+\usepackage[colorlinks=true, linkcolor=blue!70!black,
+            citecolor=green!50!black, urlcolor=blue]{hyperref}
+
+% ── Encabezado y pie de página ───────────────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Inferencia Estadística — USACH 2026}
+\rhead{\small \leftmark}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
+
+% ── Código fuente (R, Python, etc.) ─────────────────────────────────────────
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red!60!black},
+  frame=single,
+  breaklines=true,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+}
+
+% ── Entornos de teoremas ─────────────────────────────────────────────────────
+\theoremstyle{definition}
+\newtheorem{defi}{Definición}[section]
+\newtheorem{ejemplo}{Ejemplo}[section]
+\newtheorem{ejercicio}{Ejercicio}[section]
+
+\theoremstyle{plain}
+\newtheorem{teo}{Teorema}[section]
+\newtheorem{prop}{Proposición}[section]
+\newtheorem{lema}{Lema}[section]
+\newtheorem{cor}{Corolario}[section]
+
+\theoremstyle{remark}
+\newtheorem*{obs}{Observación}
+\newtheorem*{nota}{Nota}
+
+% ── Cajas de color para resultados importantes ───────────────────────────────
+\newtcolorbox{resultado}[1][]{
+  colback=blue!5!white, colframe=blue!60!black,
+  fonttitle=\bfseries, title=Resultado importante,
+  breakable, #1
+}
+
+\newtcolorbox{cuidado}[1][]{
+  colback=orange!8!white, colframe=orange!80!black,
+  fonttitle=\bfseries, title=¡Cuidado!,
+  breakable, #1
+}
+
+% ── Comandos personalizados ──────────────────────────────────────────────────
+\newcommand{\E}{\mathbb{E}}          % Esperanza
+\newcommand{\Var}{\mathrm{Var}}      % Varianza
+\newcommand{\Cov}{\mathrm{Cov}}      % Covarianza
+\newcommand{\Bias}{\mathrm{Sesgo}}   % Sesgo
+\newcommand{\iid}{\overset{\text{iid}}{\sim}}  % iid ~
+\newcommand{\asim}{\overset{a}{\sim}}          % asintóticamente ~
+\newcommand{\plim}{\xrightarrow{P}}            % convergencia en probabilidad
+\newcommand{\dlim}{\xrightarrow{d}}            % convergencia en distribución
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathcal{N}}         % distribución Normal
+\newcommand{\indicator}[1]{\mathbf{1}_{#1}}   % función indicadora
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\norm}[1]{\left\|#1\right\|}
+
+%==============================================================================
+\begin{document}
+
+% ── Portada ──────────────────────────────────────────────────────────────────
+\begin{titlepage}
+  \centering
+  \vspace*{2cm}
+  {\LARGE\bfseries Apuntes de Inferencia Estadística\par}
+    \vspace{0.5cm}
+  {\large Profesor: Nicolás Zalduendo\par}
+  \vspace{0.3cm}
+  \vspace{0.5cm}
+  {\large Universidad de Santiago de Chile\par}
+  \vspace{0.3cm}
+  {\large 2026\par}
+  \vfill
+  {\normalsize Autor: \textit{(Nicolás Aguilar)}\par}
+  \vspace{0.5cm}
+  {\small \today\par}
+\end{titlepage}
+
+% ── Tabla de contenidos ──────────────────────────────────────────────────────
+\tableofcontents
+\newpage
+
+% ── Capítulos / Secciones ────────────────────────────────────────────────────
+\input{chapters/01-introduccion}
+\input{chapters/02-estimacion-puntual}
+\input{chapters/03-intervalos-confianza}
+\input{chapters/04-pruebas-hipotesis}
+
+\end{document}
