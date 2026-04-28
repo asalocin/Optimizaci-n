@@ -1,0 +1,2327 @@
+% ============================================================
+% APUNTES.pdf -- Trozo 1
+% Páginas 1--2
+% ============================================================
+
+\section{Programación lineal y optimización convexa}
+
+\subsection{Contenido teórico del bloque}
+
+En esta parte del curso aparecen, en términos generales, los siguientes temas:
+
+\begin{itemize}
+    \item \textbf{Programas lineales.}
+    \begin{itemize}
+        \item Conceptos básicos y ejemplos.
+        \item Teoría de programación lineal.
+        \item Método simplex.
+        \item Dualidad y lema de Farkas.
+    \end{itemize}
+
+    \item \textbf{Programas cónicos.}
+
+    \item \textbf{Programas semidefinidos.}
+
+    \item \textbf{Optimización convexa.}
+    \begin{itemize}
+        \item Conceptos básicos.
+        \item Teoremas de optimalidad de primer y segundo orden.
+        \item Condiciones KKT.
+        \item Dualidad.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Problemas de optimización}
+
+Un problema de optimización tiene, en general, la forma
+\[
+    \min_{x} f(x)
+    \qquad \text{sujeto a } x\in \Omega.
+\]
+También se escribe de manera compacta como
+\[
+    \min\{f(x):x\in \Omega\}.
+\]
+
+Aquí:
+\begin{itemize}
+    \item \(x\) es la \emph{variable de decisión};
+    \item \(f\) es la \emph{función objetivo};
+    \item \(\Omega\) es el \emph{conjunto factible}.
+\end{itemize}
+
+Los componentes de \(x\), es decir,
+\[
+    x=(x_1,\dots,x_n),
+\]
+se denominan \emph{variables de optimización} o \emph{variables de decisión}.
+
+\begin{definition}[Solución óptima]
+Sea \(\Omega\subseteq \mathbb{R}^n\). Un punto \(x^\star\in \Omega\) se llama \emph{solución óptima} o \emph{minimizador} del problema
+\[
+    \min\{f(x):x\in \Omega\}
+\]
+si
+\[
+    f(x^\star)\leq f(x)
+    \qquad \forall x\in \Omega.
+\]
+\end{definition}
+
+En otras palabras, \(x^\star\) es factible y alcanza el menor valor posible de la función objetivo sobre el conjunto factible.
+
+\subsection{Restricciones funcionales}
+
+En muchos problemas de optimización, el conjunto factible se describe mediante restricciones de desigualdad e igualdad. Una forma típica es
+\[
+    \Omega
+    =
+    \left\{
+    x\in F:
+    \begin{array}{ll}
+        g_j(x)\leq 0, & j=1,\dots,r,\\[2mm]
+        h_i(x)=0, & i=1,\dots,m.
+    \end{array}
+    \right\}.
+\]
+
+En este caso:
+\begin{itemize}
+    \item las funciones \(g_j\) representan restricciones de desigualdad;
+    \item las funciones \(h_i\) representan restricciones de igualdad;
+    \item \(F\) representa un conjunto ambiente, usualmente \(F\subseteq \mathbb{R}^n\).
+\end{itemize}
+
+\subsection{Optimización convexa y programación lineal}
+
+\subsubsection{Optimización convexa}
+
+Un problema de optimización convexa tiene la forma
+\[
+    \min f(x)
+    \qquad
+    \text{sujeto a } x\in \Omega,
+\]
+donde la estructura convexa aparece tanto en la función objetivo como en las restricciones.
+
+De manera más explícita, en un problema convexo con restricciones funcionales, se pide que:
+\begin{itemize}
+    \item la función objetivo \(f\) sea convexa;
+    \item las funciones de desigualdad \(g_j\) sean convexas;
+    \item las funciones de igualdad \(h_i\) sean afines.
+\end{itemize}
+
+Es decir, una forma estándar es
+\[
+    \begin{array}{ll}
+        \min & f(x)\\[1mm]
+        \text{sujeto a} & g_j(x)\leq 0,\qquad j=1,\dots,r,\\
+        & h_i(x)=0,\qquad i=1,\dots,m,
+    \end{array}
+\]
+con \(f\) y \(g_j\) convexas, y \(h_i\) afines.
+
+\subsubsection{Programación lineal}
+
+Un \emph{programa lineal} corresponde al caso en que la función objetivo y las restricciones son afines en \(x\). Es decir,
+\[
+    f,\ g_j,\ h_i
+    \quad
+    \text{son funciones afines en } x.
+\]
+
+Recordemos que una función afín tiene la forma
+\[
+    a^\top x+b,
+\]
+donde \(a\in\mathbb{R}^n\) y \(b\in\mathbb{R}\).
+
+Por tanto, un programa lineal puede escribirse en una forma del tipo
+\[
+    \begin{array}{ll}
+        \min & c^\top x\\[1mm]
+        \text{sujeto a} & Ax\leq b,\\
+        & Ex=d,
+    \end{array}
+\]
+donde las restricciones son lineales o afines.
+
+\subsection{Existencia de soluciones}
+
+\subsubsection{Teorema de Weierstrass}
+
+\begin{theorem}[Weierstrass]
+Sea \(S\subseteq\mathbb{R}^n\) un conjunto no vacío y compacto. Si
+\[
+    f:S\to\mathbb{R}
+\]
+es continua, entonces \(f\) alcanza su mínimo y su máximo sobre \(S\).
+\end{theorem}
+
+En particular, el problema
+\[
+    \min\{f(x):x\in S\}
+\]
+tiene solución siempre que \(S\) sea no vacío y compacto, y \(f\) sea continua.
+
+\subsubsection{Funciones sin minimizador}
+
+La continuidad de \(f\) no basta por sí sola para garantizar existencia de minimizador. El conjunto factible también importa.
+
+\paragraph{Ejemplo 1.}
+Considérese
+\[
+    f(x)=\tan(x),
+    \qquad
+    \Omega=\left(-\frac{\pi}{2},\frac{\pi}{2}\right).
+\]
+Entonces \(f\) es continua en \(\Omega\), pero
+\[
+    \tan(x)\to -\infty
+    \qquad
+    \text{cuando } x\to -\frac{\pi}{2}^{+}.
+\]
+Por lo tanto, los valores de \(f\) pueden ser arbitrariamente pequeños y el problema
+\[
+    \min\{\tan(x):x\in \Omega\}
+\]
+no tiene minimizador.
+
+\paragraph{Ejemplo 2.}
+Considérese
+\[
+    f(x)=C+e^x,
+    \qquad
+    \Omega=\mathbb{R}.
+\]
+Entonces
+\[
+    C+e^x>C
+    \qquad
+    \forall x\in\mathbb{R},
+\]
+pero
+\[
+    C+e^x\to C
+    \qquad
+    \text{cuando } x\to -\infty.
+\]
+Así,
+\[
+    \inf_{x\in\mathbb{R}} f(x)=C,
+\]
+pero no existe \(x\in\mathbb{R}\) tal que \(f(x)=C\). Por tanto, el mínimo no se alcanza.
+
+\subsection{Subniveles y existencia de minimizadores}
+
+\begin{definition}[Conjunto de subnivel]
+Sea \(f:S\to\mathbb{R}\). Para \(\alpha\in\mathbb{R}\), el conjunto de subnivel asociado a \(\alpha\) se define por
+\[
+    L_\alpha(f)
+    =
+    \{x\in S:f(x)\leq \alpha\}.
+\]
+\end{definition}
+
+\begin{theorem}[Criterio de existencia mediante subniveles]
+Sea \(f:S\to\mathbb{R}\) continua. Si existe \(\alpha\in\mathbb{R}\) tal que
+\[
+    L_\alpha(f)=\{x\in S:f(x)\leq \alpha\}
+\]
+es no vacío y compacto, entonces \(f\) tiene un mínimo en \(S\).
+\end{theorem}
+
+\begin{proof}
+Como \(L_\alpha(f)\) es compacto y \(f\) es continua, por el teorema de Weierstrass existe
+\[
+    x^\star\in L_\alpha(f)
+\]
+tal que
+\[
+    f(x^\star)\leq f(x)
+    \qquad
+    \forall x\in L_\alpha(f).
+\]
+Además, si \(x\notin L_\alpha(f)\), entonces
+\[
+    f(x)>\alpha.
+\]
+Como \(x^\star\in L_\alpha(f)\), se tiene \(f(x^\star)\leq \alpha\). Por tanto,
+\[
+    f(x^\star)\leq \alpha < f(x)
+    \qquad
+    \forall x\notin L_\alpha(f).
+\]
+Luego,
+\[
+    f(x^\star)\leq f(x)
+    \qquad
+    \forall x\in S.
+\]
+Así, \(x^\star\) es minimizador global de \(f\) sobre \(S\).
+\end{proof}
+
+\subsection{Ejemplo: problema de proyección}
+
+Sea \(y\in\mathbb{R}^n\) y sea \(S\subseteq\mathbb{R}^n\) un conjunto cerrado, no necesariamente acotado. Queremos encontrar un punto de \(S\) que esté lo más cerca posible de \(y\). Esto conduce al problema
+\[
+    \min_{x\in S}\|x-y\|.
+\]
+
+Equivalentemente,
+\[
+    \begin{array}{ll}
+        \min & f(x)=\|x-y\|\\[1mm]
+        \text{sujeto a} & x\in S.
+    \end{array}
+\]
+
+Aunque \(S\) no sea compacto, el problema tiene solución. La idea es restringir el problema a un conjunto compacto que contiene algún minimizador del problema original.
+
+Como \(S\neq\varnothing\), tomamos un punto \(z\in S\). Entonces basta considerar los puntos \(x\in S\) que satisfacen
+\[
+    \|x-y\|\leq \|z-y\|.
+\]
+En efecto, cualquier punto \(x\in S\) con
+\[
+    \|x-y\|>\|z-y\|
+\]
+no puede ser minimizador, porque \(z\) ya entrega un valor menor.
+
+Por tanto, podemos restringir el problema al conjunto
+\[
+    \Omega
+    =
+    S\cap \overline{B}\bigl(y,\|z-y\|\bigr).
+\]
+Este conjunto es no vacío, cerrado y acotado; luego es compacto. Además, la función
+\[
+    f(x)=\|x-y\|
+\]
+es continua. Por Weierstrass, existe \(x^\star\in\Omega\) tal que
+\[
+    \|x^\star-y\|
+    =
+    \min_{x\in \Omega}\|x-y\|.
+\]
+Por la construcción de \(\Omega\), este mismo punto es minimizador del problema original sobre \(S\).
+
+\subsection{El simplex de probabilidades}
+
+Un conjunto importante en optimización es el simplex
+\[
+    \Delta_n
+    =
+    \left\{
+    x=(x_1,\dots,x_n)\in\mathbb{R}_{\geq 0}^n:
+    \sum_{i=1}^{n}x_i=1
+    \right\}.
+\]
+
+Este conjunto puede interpretarse como el conjunto de distribuciones de probabilidad sobre el universo finito
+\[
+    \{1,\dots,n\}.
+\]
+
+En efecto, si \(x\in\Delta_n\), entonces:
+\[
+    x_i\geq 0
+    \qquad
+    \text{para todo } i=1,\dots,n,
+\]
+y
+\[
+    \sum_{i=1}^{n}x_i=1.
+\]
+
+\begin{remark}
+El simplex \(\Delta_n\) es compacto. En efecto:
+\begin{itemize}
+    \item es cerrado, porque está definido mediante las condiciones cerradas
+    \[
+        x_i\geq 0,
+        \qquad
+        \sum_{i=1}^{n}x_i=1;
+    \]
+    \item es acotado, porque si \(x\in\Delta_n\), entonces
+    \[
+        0\leq x_i\leq 1
+        \qquad
+        \forall i=1,\dots,n.
+    \]
+\end{itemize}
+Por tanto, \(\Delta_n\) es compacto.
+\end{remark}
+
+\subsection{Ejemplo: respuesta regularizada sobre el simplex}
+
+Sea \(v=(v_1,\dots,v_n)\in\mathbb{R}^n\) una asignación de valores. Un problema típico consiste en elegir una distribución \(x\in\Delta_n\) que minimice una función compuesta por un término lineal y un término de regularización entrópica.
+
+Un modelo de este tipo es
+\[
+    \min_{x\in\Delta_n}
+    g(x)
+    =
+    -\sum_{i=1}^{n}v_i x_i
+    +
+    \frac{1}{\lambda}
+    \sum_{i=1}^{n}x_i\log(x_i).
+\]
+% revisar: en el manuscrito aparece una constante de regularización;
+% la forma más probable es (1/lambda) sum_i x_i log(x_i).
+
+Equivalentemente,
+\[
+    \begin{array}{ll}
+        \min & g(x)
+        =
+        -\displaystyle\sum_{i=1}^{n}v_i x_i
+        +
+        \dfrac{1}{\lambda}
+        \displaystyle\sum_{i=1}^{n}x_i\log(x_i)
+        \\[4mm]
+        \text{sujeto a} & x\in \Delta_n.
+    \end{array}
+\]
+
+Este tipo de problema aparece, por ejemplo, en versiones regularizadas de problemas de decisión o de mejor respuesta.
+
+\subsection{Complejidad computacional}
+
+Los problemas de programación lineal se resuelven eficientemente, tanto desde el punto de vista teórico como práctico.
+
+\begin{remark}
+En términos generales, la programación lineal pertenece a una clase de problemas tratables computacionalmente. En cambio, muchos problemas de optimización generales, especialmente cuando tienen restricciones discretas o combinatorias, pueden ser NP-duros.
+\end{remark}
+
+% revisar: en la página aparece una observación sobre P.L. y NP-duro.
+% La interpretación más razonable es distinguir programación lineal continua
+% de problemas generales de optimización o programación lineal entera.
+
+% ============================================================
+% APUNTES.pdf -- Trozo 2
+% Páginas 3--4
+% ============================================================
+
+\subsection{Programación lineal entera y problema de corte máximo}
+
+En general, los problemas de programación lineal entera pueden ser computacionalmente difíciles. Un ejemplo clásico es el problema de \emph{corte máximo}.
+
+Sea \(G=(V,E)\) un grafo no dirigido. Dado un subconjunto \(S\subseteq V\), el corte asociado a \(S\) separa los vértices en dos partes:
+\[
+    S
+    \qquad \text{y} \qquad
+    V\setminus S.
+\]
+
+Una arista \(\{u,v\}\in E\) pertenece al corte si uno de sus extremos está en \(S\) y el otro está en \(V\setminus S\).
+
+Para modelar esto, asignamos a cada vértice \(v\in V\) una variable
+\[
+    X_v\in\{-1,1\},
+\]
+con el siguiente significado:
+\[
+    X_v=1
+    \quad \Longleftrightarrow \quad
+    v\in S,
+\]
+y
+\[
+    X_v=-1
+    \quad \Longleftrightarrow \quad
+    v\in V\setminus S.
+\]
+
+Entonces, para una arista \(\{u,v\}\in E\), se tiene:
+\[
+    \{u,v\} \text{ cruza el corte}
+    \quad \Longleftrightarrow \quad
+    X_uX_v=-1.
+\]
+En cambio, si ambos extremos están en el mismo lado del corte, entonces
+\[
+    X_uX_v=1.
+\]
+
+Por tanto, el indicador de que la arista \(\{u,v\}\) cruza el corte puede escribirse como
+\[
+    \frac{1-X_uX_v}{2}.
+\]
+
+En consecuencia, el tamaño del corte está dado por
+\[
+    c(S,V\setminus S)
+    =
+    \sum_{\{u,v\}\in E}
+    \frac{1-X_uX_v}{2}.
+\]
+
+Así, el problema de corte máximo puede formularse como
+\[
+    \begin{array}{ll}
+        \max & \displaystyle
+        \sum_{\{u,v\}\in E}
+        \frac{1-X_uX_v}{2}
+        \\[4mm]
+        \text{sujeto a} & X_v\in\{-1,1\},
+        \qquad v\in V.
+    \end{array}
+\]
+
+De manera equivalente, usando la condición
+\[
+    X_v\in\{-1,1\}
+    \quad \Longleftrightarrow \quad
+    X_v^2=1,
+\]
+se puede escribir
+\[
+    \begin{array}{ll}
+        \max & \displaystyle
+        \sum_{\{u,v\}\in E}
+        \frac{1-X_uX_v}{2}
+        \\[4mm]
+        \text{sujeto a} & X_v^2=1,
+        \qquad v\in V.
+    \end{array}
+\]
+
+\begin{remark}
+Esta formulación ya no es un programa lineal continuo: aparecen restricciones cuadráticas y variables discretas. Esto refleja la dificultad combinatoria del problema.
+\end{remark}
+
+\subsection{Ejemplo geométrico de programa lineal}
+
+Consideremos el problema lineal
+\[
+    \begin{array}{ll}
+        \min & -x_1-x_2 \\[1mm]
+        \text{sujeto a} & x_1\geq 0,\\
+        & x_2\geq 0,\\
+        & x_2-x_1\leq 1,\\
+        & x_1+6x_2\leq 1,\\
+        & 4x_1-x_2\leq 10.
+    \end{array}
+\]
+
+Minimizar \(-x_1-x_2\) es equivalente a maximizar \(x_1+x_2\). Por tanto, el problema anterior puede leerse como
+\[
+    \max x_1+x_2
+\]
+sobre la región factible determinada por las desigualdades.
+
+En forma matricial, el problema se puede escribir como
+\[
+    \begin{array}{ll}
+        \min & f(x)=-x_1-x_2\\[1mm]
+        \text{sujeto a}
+        &
+        \begin{pmatrix}
+            -1 & 1\\
+            1 & 6\\
+            4 & -1
+        \end{pmatrix}
+        \begin{pmatrix}
+            x_1\\
+            x_2
+        \end{pmatrix}
+        \leq
+        \begin{pmatrix}
+            1\\
+            1\\
+            10
+        \end{pmatrix},
+        \\[6mm]
+        & x_1\geq 0,\quad x_2\geq 0.
+    \end{array}
+\]
+
+La pregunta geométrica es:
+
+\[
+    \text{¿Qué punto del polígono factible maximiza } x_1+x_2?
+\]
+
+La función objetivo
+\[
+    x_1+x_2
+\]
+tiene como conjuntos de nivel las rectas
+\[
+    N_\alpha
+    =
+    \{(x_1,x_2)\in\mathbb{R}^2:x_1+x_2=\alpha\}.
+\]
+
+Maximizar \(x_1+x_2\) equivale a desplazar estas rectas en la dirección del vector
+\[
+    (1,1)
+\]
+hasta encontrar el mayor nivel \(\alpha\) que todavía intersecta la región factible.
+
+En otras palabras, una solución óptima está dada por el mayor valor de \(\alpha\) tal que
+\[
+    N_\alpha\cap \Omega\neq\varnothing,
+\]
+donde \(\Omega\) denota el conjunto factible.
+
+\subsection{Formas equivalentes de problemas lineales}
+
+En programación lineal, un mismo problema puede escribirse de distintas maneras equivalentes.
+
+\subsubsection{Reemplazar igualdades por desigualdades}
+
+Una igualdad puede reemplazarse por dos desigualdades. En efecto,
+\[
+    a^\top x=b
+\]
+es equivalente a imponer simultáneamente
+\[
+    a^\top x\leq b
+    \qquad \text{y} \qquad
+    -a^\top x\leq -b.
+\]
+
+Por tanto, una restricción de igualdad puede escribirse como dos restricciones de desigualdad.
+
+\subsubsection{Invertir la dirección de optimización}
+
+También podemos cambiar de maximización a minimización. Se tiene la equivalencia
+\[
+    \max c^\top x
+    \quad \Longleftrightarrow \quad
+    \min -c^\top x.
+\]
+
+De manera análoga,
+\[
+    \min c^\top x
+    \quad \Longleftrightarrow \quad
+    \max -c^\top x.
+\]
+
+\subsubsection{Forma de desigualdad}
+
+Un programa lineal en forma de desigualdad puede escribirse como
+\[
+    \begin{array}{ll}
+        \min & c^\top x\\[1mm]
+        \text{sujeto a} & Ax\leq b.
+    \end{array}
+\]
+
+Si al invertir direcciones o modificar restricciones se obtiene un conjunto factible vacío,
+\[
+    \Omega=\varnothing,
+\]
+entonces el problema no tiene solución factible.
+
+\begin{definition}[Problema no factible]
+Un problema de optimización se llama \emph{no factible} si su conjunto factible es vacío.
+\end{definition}
+
+\subsection{Ejemplo numérico de programa lineal}
+
+En los apuntes aparece un ejemplo numérico con tres variables, escrito matricialmente como
+\[
+    \begin{array}{ll}
+        \min & 7x_1+5x_2+15x_3\\[1mm]
+        \text{sujeto a}
+        &
+        \begin{pmatrix}
+            55 & 0.5 & 9.5\\
+            60 & 300 & 10\\
+            30 & 20 & 10
+        \end{pmatrix}
+        \begin{pmatrix}
+            x_1\\
+            x_2\\
+            x_3
+        \end{pmatrix}
+        \leq
+        \begin{pmatrix}
+            0.5\\
+            15\\
+            4
+        \end{pmatrix}.
+    \end{array}
+\]
+% revisar: los coeficientes de esta matriz aparecen poco nítidos en la página 3.
+% Especialmente el primer renglón y el término independiente 0.5 podrían requerir revisión.
+
+\subsection{Ejemplo: problema de transporte}
+
+Supongamos que hay dos fuentes o fábricas,
+\[
+    F_1,\quad F_2,
+\]
+y tres destinos,
+\[
+    D_1,\quad D_2,\quad D_3.
+\]
+
+Los costos unitarios de transporte están dados por la tabla
+\[
+\begin{array}{c|cc}
+    & F_1 & F_2\\
+    \hline
+    D_1 & 2 & 1\\
+    D_2 & 1 & 2\\
+    D_3 & 3 & 1
+\end{array}
+\]
+
+Definimos
+\[
+    x_{ij}
+\]
+como la cantidad enviada desde la fuente \(F_i\) hacia el destino \(D_j\), donde
+\[
+    i\in\{1,2\},
+    \qquad
+    j\in\{1,2,3\}.
+\]
+
+El costo total de transporte es
+\[
+    2x_{11}+x_{21}
+    +
+    x_{12}+2x_{22}
+    +
+    3x_{13}+x_{23}.
+\]
+
+Por tanto, el problema de transporte se puede escribir como
+\[
+    \begin{array}{ll}
+        \min
+        &
+        2x_{11}+x_{21}
+        +
+        x_{12}+2x_{22}
+        +
+        3x_{13}+x_{23}
+        \\[2mm]
+        \text{sujeto a}
+        &
+        \displaystyle
+        \sum_{j=1}^{3}x_{1j}=10000,
+        \\[3mm]
+        &
+        \displaystyle
+        \sum_{j=1}^{3}x_{2j}=5000,
+        \\[3mm]
+        &
+        \displaystyle
+        \sum_{i=1}^{2}x_{ij}=5000,
+        \qquad j=1,2,3,
+        \\[3mm]
+        &
+        x_{ij}\geq 0,
+        \qquad i=1,2,\quad j=1,2,3.
+    \end{array}
+\]
+
+Las dos primeras restricciones representan la capacidad o disponibilidad de cada fuente. Las tres restricciones siguientes representan la demanda de cada destino.
+
+\subsection{Geometría de la programación lineal}
+
+Una forma estándar importante de un programa lineal es la \emph{forma de igualdad}:
+\[
+    \begin{array}{ll}
+        \max & c^\top x\\[1mm]
+        \text{sujeto a} & Ax=b,\\
+        & x\geq 0.
+    \end{array}
+\]
+
+Aquí
+\[
+    A\in\mathbb{R}^{m\times n},
+    \qquad
+    m\leq n,
+    \qquad
+    \operatorname{rango}(A)=m.
+\]
+
+La pregunta central es:
+
+\[
+    \text{¿Cómo resolver } Ax=b \text{ con } x\geq 0?
+\]
+
+El conjunto factible asociado es
+\[
+    F
+    =
+    \{x\in\mathbb{R}^n:Ax=b,\ x\geq 0\}.
+\]
+
+\subsection{Variables de holgura}
+
+Una desigualdad de tipo
+\[
+    a^\top x\leq b
+\]
+puede transformarse en una igualdad agregando una variable de holgura.
+
+Por ejemplo, consideremos el problema
+\[
+    \begin{array}{ll}
+        \max & 3x_1-2x_2\\[1mm]
+        \text{sujeto a}
+        &
+        2x_1-x_2\leq 4,\\
+        &
+        -x_1+3x_2\leq -5,\\
+        &
+        x_2\geq 0.
+    \end{array}
+\]
+
+Para convertir la restricción
+\[
+    2x_1-x_2\leq 4
+\]
+en una igualdad, añadimos una variable de holgura \(x_3\geq 0\), obteniendo
+\[
+    2x_1-x_2+x_3=4,
+    \qquad
+    x_3\geq 0.
+\]
+
+En general,
+\[
+    a^\top x\leq b
+\]
+se transforma en
+\[
+    a^\top x+s=b,
+    \qquad
+    s\geq 0.
+\]
+
+\subsection{Conjuntos convexos}
+
+\begin{definition}[Conjunto convexo]
+Un conjunto \(X\subseteq\mathbb{R}^n\) es \emph{convexo} si para cada par de puntos \(x,y\in X\), el segmento que une \(x\) con \(y\) también pertenece a \(X\). Es decir,
+\[
+    tx+(1-t)y\in X
+    \qquad
+    \forall x,y\in X,\quad \forall t\in[0,1].
+\]
+\end{definition}
+
+\begin{proposition}
+El conjunto de factibilidad de un programa lineal es convexo.
+\end{proposition}
+
+\begin{proof}
+Tarea.
+\end{proof}
+
+\subsection{Conos}
+
+\begin{definition}[Cono]
+Un conjunto \(X\subseteq\mathbb{R}^n\) es un \emph{cono} si
+\[
+    \alpha x\in X
+    \qquad
+    \forall x\in X,\quad \forall \alpha\geq 0.
+\]
+\end{definition}
+
+\begin{definition}[Cono convexo generado]
+Sean
+\[
+    a_1,\dots,a_n\in\mathbb{R}^m.
+\]
+El \emph{cono convexo generado} por \(a_1,\dots,a_n\) es
+\[
+    \operatorname{cone}(a_1,\dots,a_n)
+    =
+    \left\{
+        \sum_{i=1}^{n}t_i a_i:
+        t_i\geq 0,\ i=1,\dots,n
+    \right\}.
+\]
+\end{definition}
+
+\begin{proposition}
+El cono convexo generado por un conjunto finito de vectores es un cono convexo.
+\end{proposition}
+
+\begin{proof}
+Tarea.
+\end{proof}
+
+\subsection{Factibilidad y conos generados por columnas}
+
+Sea
+\[
+    A=
+    \begin{pmatrix}
+        \vert & \vert & & \vert\\
+        a_1 & a_2 & \cdots & a_n\\
+        \vert & \vert & & \vert
+    \end{pmatrix}
+    \in\mathbb{R}^{m\times n},
+\]
+donde \(a_1,\dots,a_n\in\mathbb{R}^m\) son las columnas de \(A\).
+
+Observemos que
+\[
+    Ax
+    =
+    x_1a_1+x_2a_2+\cdots+x_na_n.
+\]
+
+Si \(x\geq 0\), entonces \(Ax\) es una combinación cónica de las columnas de \(A\). Por tanto,
+\[
+    C_A
+    =
+    \{Ax:x\geq 0\}
+\]
+es el cono generado por las columnas de \(A\).
+
+Así, el sistema
+\[
+    Ax=b,\qquad x\geq 0
+\]
+es factible si y solamente si
+\[
+    b\in C_A.
+\]
+
+En consecuencia, el programa lineal en forma de igualdad
+\[
+    \begin{array}{ll}
+        \max & c^\top x\\[1mm]
+        \text{sujeto a} & Ax=b,\\
+        & x\geq 0
+    \end{array}
+\]
+es factible si y solamente si el vector \(b\) pertenece al cono generado por las columnas de \(A\).
+
+% ============================================================
+% APUNTES.pdf -- Trozo 3
+% Páginas 5--6
+% ============================================================
+
+\subsection{Puntos extremos}
+
+\begin{definition}[Punto extremo]
+Sea \(X\subseteq \mathbb{R}^n\) un conjunto convexo. Un punto \(x_0\in X\) se llama \emph{punto extremo} de \(X\) si no puede escribirse como combinación convexa no trivial de dos puntos distintos de \(X\).
+
+Es decir, si
+\[
+    x_0=tx_1+(1-t)x_2,
+    \qquad t\in(0,1),
+    \qquad x_1,x_2\in X,
+\]
+entonces necesariamente
+\[
+    x_1=x_2=x_0.
+\]
+\end{definition}
+
+Geométricamente, los puntos extremos son los vértices del conjunto factible cuando este tiene estructura poliédrica.
+
+\subsection{Soluciones básicas factibles}
+
+Consideremos nuevamente un programa lineal en forma de igualdad:
+\[
+    \begin{array}{ll}
+        \max & c^\top x\\[1mm]
+        \text{sujeto a} & Ax=b,\\
+        & x\geq 0,
+    \end{array}
+\]
+donde
+\[
+    A\in\mathbb{R}^{m\times n},
+    \qquad
+    \operatorname{rango}(A)=m,
+    \qquad
+    b\in\mathbb{R}^m.
+\]
+
+Sea
+\[
+    [n]=\{1,\dots,n\}.
+\]
+
+Dado un subconjunto \(B\subseteq[n]\), denotamos por
+\[
+    A_B
+\]
+la matriz formada por las columnas de \(A\) cuyos índices pertenecen a \(B\).
+
+Más explícitamente, si
+\[
+    A=
+    \begin{pmatrix}
+        \vert & \vert & & \vert\\
+        a_1 & a_2 & \cdots & a_n\\
+        \vert & \vert & & \vert
+    \end{pmatrix},
+\]
+entonces
+\[
+    A_B
+    =
+    \begin{pmatrix}
+        \vert & & \vert\\
+        a_i & \cdots & a_j\\
+        \vert & & \vert
+    \end{pmatrix},
+    \qquad i,j\in B.
+\]
+
+Análogamente, si \(x\in\mathbb{R}^n\), denotamos por
+\[
+    x_B
+\]
+el vector formado por las componentes \(x_i\) con índice \(i\in B\).
+
+\begin{definition}[Base]
+Sea \(A\in\mathbb{R}^{m\times n}\) con \(\operatorname{rango}(A)=m\). Un subconjunto
+\[
+    B\subseteq[n]
+\]
+se llama una \emph{base} si
+\[
+    |B|=m
+\]
+y la matriz
+\[
+    A_B
+\]
+es no singular.
+
+Equivalente: \(B\) es una base si las columnas de \(A\) indexadas por \(B\) son linealmente independientes y forman una matriz cuadrada invertible.
+\end{definition}
+
+\begin{definition}[Solución básica]
+Dado el programa lineal
+\[
+    \begin{array}{ll}
+        \max & c^\top x\\[1mm]
+        \text{sujeto a} & Ax=b,\\
+        & x\geq 0,
+    \end{array}
+\]
+sea \(B\subseteq[n]\) una base.
+
+Un vector \(\widehat{x}\in\mathbb{R}^n\) se llama \emph{solución básica asociada a la base \(B\)} si satisface
+\[
+    A_B\widehat{x}_B=b
+\]
+y
+\[
+    \widehat{x}_j=0,
+    \qquad
+    \forall j\notin B.
+\]
+
+Las variables \(\widehat{x}_j\) con \(j\in B\) se llaman \emph{variables básicas}, mientras que las variables con \(j\notin B\) se llaman \emph{variables no básicas}.
+\end{definition}
+
+Como \(A_B\) es no singular, el sistema
+\[
+    A_B\widehat{x}_B=b
+\]
+tiene solución única, dada por
+\[
+    \widehat{x}_B=A_B^{-1}b.
+\]
+
+Por tanto, una vez escogida la base \(B\), queda determinada una única solución básica.
+
+\begin{definition}[Solución básica factible]
+Un vector \(\widehat{x}\in\mathbb{R}^n\) se llama \emph{solución básica factible} si es una solución básica asociada a alguna base \(B\subseteq[n]\) y, además, es factible para el programa lineal, es decir,
+\[
+    A\widehat{x}=b,
+    \qquad
+    \widehat{x}\geq 0.
+\]
+\end{definition}
+
+En resumen:
+\[
+    \widehat{x}
+    \text{ es SBF}
+    \quad \Longleftrightarrow \quad
+    \widehat{x}
+    \text{ es solución básica y }
+    \widehat{x}\geq 0.
+\]
+
+\subsection{Caracterización de soluciones básicas factibles}
+
+Sea
+\[
+    x\in\mathbb{R}^n
+\]
+un punto factible, es decir,
+\[
+    Ax=b,
+    \qquad
+    x\geq 0.
+\]
+
+Definimos el conjunto de índices positivos de \(x\) por
+\[
+    K_x
+    =
+    \{j\in[n]:x_j>0\}.
+\]
+
+\begin{proposition}
+Sea \(x\in\mathbb{R}^n\) un punto factible del sistema
+\[
+    Ax=b,
+    \qquad
+    x\geq 0.
+\]
+Entonces \(x\) es una solución básica factible asociada a alguna base \(B\subseteq[n]\) si y solamente si las columnas
+\[
+    \{a_j:j\in K_x\}
+\]
+son linealmente independientes.
+\end{proposition}
+
+\begin{proof}
+Primero supongamos que \(x\) es una solución básica factible con base \(B\). Entonces, por definición,
+\[
+    x_j=0,
+    \qquad
+    \forall j\notin B.
+\]
+Por lo tanto, si \(x_j>0\), necesariamente \(j\in B\). Es decir,
+\[
+    K_x\subseteq B.
+\]
+
+Como \(B\) es una base, las columnas de \(A_B\) son linealmente independientes. Luego, cualquier subconjunto de ellas también es linealmente independiente. En particular, las columnas
+\[
+    \{a_j:j\in K_x\}
+\]
+son linealmente independientes.
+
+Recíprocamente, supongamos ahora que las columnas
+\[
+    \{a_j:j\in K_x\}
+\]
+son linealmente independientes.
+
+Si
+\[
+    |K_x|=m,
+\]
+tomamos
+\[
+    B=K_x.
+\]
+Entonces \(A_B\) es no singular y, como \(x_j=0\) para \(j\notin K_x\), el punto \(x\) es una solución básica factible con base \(B\).
+
+Si
+\[
+    |K_x|<m,
+\]
+extendemos \(K_x\) a un conjunto \(B\subseteq[n]\) con
+\[
+    K_x\subseteq B,
+    \qquad
+    |B|=m,
+\]
+agregando índices de columnas de \(A\) de modo que las columnas correspondientes sigan siendo linealmente independientes. Esto es posible porque
+\[
+    \operatorname{rango}(A)=m.
+\]
+
+Entonces \(A_B\) es no singular. Además, como \(K_x\subseteq B\), se tiene
+\[
+    x_j=0,
+    \qquad
+    \forall j\notin B.
+\]
+
+Por otro lado, como \(x\) es factible,
+\[
+    b=Ax.
+\]
+Separando las columnas según \(B\) y su complemento, obtenemos
+\[
+    b=A_Bx_B+A_Nx_N,
+\]
+donde
+\[
+    N=[n]\setminus B.
+\]
+Pero \(x_N=0\), luego
+\[
+    b=A_Bx_B.
+\]
+Así, \(x\) es solución básica asociada a la base \(B\). Como además \(x\geq 0\), concluimos que \(x\) es solución básica factible.
+\end{proof}
+
+\begin{remark}
+La proposición anterior dice que un punto factible es una solución básica factible precisamente cuando las columnas activas, es decir, aquellas asociadas a variables estrictamente positivas, son linealmente independientes.
+\end{remark}
+
+\subsection{Soluciones básicas factibles y puntos extremos}
+
+\begin{proposition}
+Toda solución básica factible es un punto extremo del conjunto factible
+\[
+    F=\{x\in\mathbb{R}^n:Ax=b,\ x\geq 0\}.
+\]
+\end{proposition}
+
+\begin{proof}
+Sea \(\widehat{x}\) una solución básica factible asociada a una base \(B\). Queremos probar que \(\widehat{x}\) no puede escribirse como combinación convexa no trivial de dos puntos factibles distintos.
+
+Como \(\widehat{x}\) es solución básica asociada a \(B\), se tiene
+\[
+    \widehat{x}_j=0,
+    \qquad
+    \forall j\notin B,
+\]
+y
+\[
+    A_B\widehat{x}_B=b.
+\]
+
+Además, como \(A_B\) es no singular,
+\[
+    \widehat{x}_B=A_B^{-1}b.
+\]
+
+Supongamos que
+\[
+    \widehat{x}
+    =
+    t y+(1-t)z,
+    \qquad
+    t\in(0,1),
+\]
+con
+\[
+    y,z\in F.
+\]
+
+Como \(y,z\geq 0\) y \(\widehat{x}_j=0\) para todo \(j\notin B\), necesariamente
+\[
+    y_j=z_j=0,
+    \qquad
+    \forall j\notin B.
+\]
+
+Además, como \(y,z\in F\),
+\[
+    Ay=b,
+    \qquad
+    Az=b.
+\]
+Usando que sus componentes fuera de \(B\) son cero, se obtiene
+\[
+    A_By_B=b,
+    \qquad
+    A_Bz_B=b.
+\]
+Como \(A_B\) es invertible,
+\[
+    y_B=A_B^{-1}b=\widehat{x}_B,
+    \qquad
+    z_B=A_B^{-1}b=\widehat{x}_B.
+\]
+Por lo tanto,
+\[
+    y=z=\widehat{x}.
+\]
+Así, \(\widehat{x}\) es punto extremo de \(F\).
+\end{proof}
+
+\subsection{Número finito de soluciones básicas factibles}
+
+Como una solución básica factible está asociada a una base \(B\subseteq[n]\) con \(|B|=m\), el número de posibles bases es finito. En particular,
+\[
+    \#\{\text{bases}\}
+    \leq
+    \binom{n}{m}.
+\]
+
+Por tanto,
+\[
+    \#\{\text{soluciones básicas factibles}\}
+    \leq
+    \binom{n}{m}
+    <\infty.
+\]
+
+\begin{remark}
+Esto es fundamental para el método simplex: aunque el conjunto factible puede tener infinitos puntos, los candidatos relevantes para optimizar una función lineal pueden buscarse entre un conjunto finito de soluciones básicas factibles.
+\end{remark}
+
+\subsection{Teorema fundamental de la programación lineal}
+
+\begin{theorem}[Existencia de solución óptima básica factible]
+Consideremos el programa lineal
+\[
+    \begin{array}{ll}
+        \max & c^\top x\\[1mm]
+        \text{sujeto a} & Ax=b,\\
+        & x\geq 0.
+    \end{array}
+\]
+
+Supongamos que el problema es factible y que la función objetivo está acotada superiormente sobre el conjunto factible. Es decir, existe \(M\in\mathbb{R}\) tal que
+\[
+    c^\top x\leq M,
+    \qquad
+    \forall x\in F.
+\]
+
+Entonces existe una solución óptima que es solución básica factible.
+\end{theorem}
+
+De manera equivalente, si el programa lineal tiene solución óptima, entonces posee al menos una solución óptima en un punto extremo del conjunto factible.
+
+Como los puntos extremos corresponden a soluciones básicas factibles, el problema puede resolverse, al menos conceptualmente, revisando un número finito de candidatos:
+\[
+    \#\{\text{SBF}\}
+    \leq
+    \binom{n}{m}.
+\]
+
+\begin{remark}
+Este resultado entrega la intuición central detrás del método simplex: buscar óptimos de una función lineal recorriendo soluciones básicas factibles, es decir, vértices del poliedro factible.
+\end{remark}
+
+\subsection{Flujos en redes}
+
+Un ejemplo importante de programación lineal aparece en problemas de flujos sobre redes.
+
+Sea
+\[
+    G=(V,E)
+\]
+un grafo dirigido, donde:
+\begin{itemize}
+    \item \(V\) es el conjunto de vértices;
+    \item \(E\) es el conjunto de arcos o pares ordenados de vértices.
+\end{itemize}
+
+Un arco de \(E\) se escribe como
+\[
+    (a,s)\in E,
+\]
+donde el orden importa:
+\[
+    (a,s)\neq (s,a)
+\]
+en general.
+
+\begin{remark}
+En una red dirigida, cada arco tiene una orientación. Por eso los pares ordenados representan conexiones dirigidas entre vértices.
+\end{remark}
+
+% revisar: la página 6 introduce "Flujos en redes", pero el desarrollo
+% completo del modelo parece continuar en la página siguiente.
+
+% ============================================================
+% APUNTES.pdf -- Trozo 4
+% Páginas 7--8
+% ============================================================
+
+\begin{proof}[Demostración del teorema fundamental de la programación lineal]
+Sea \(x^0\in F\) un punto factible. Consideremos el conjunto de puntos factibles cuyo valor objetivo es al menos tan bueno como el de \(x^0\):
+\[
+    F_{x^0}
+    =
+    \{x\in F:c^\top x\geq c^\top x^0\}.
+\]
+
+Como el problema está acotado superiormente, podemos escoger dentro de \(F_{x^0}\) un punto \(\widehat{x}\) que maximice el número de componentes nulas. Es decir, elegimos \(\widehat{x}\in F_{x^0}\) tal que
+\[
+    \#\{j:\widehat{x}_j=0\}
+\]
+sea máximo entre los puntos factibles con valor objetivo al menos \(c^\top x^0\).
+
+Queremos probar que \(\widehat{x}\) es una solución básica factible.
+
+Supongamos, por contradicción, que \(\widehat{x}\) no es una SBF. Definamos
+\[
+    K
+    =
+    \{j\in[n]:\widehat{x}_j>0\}.
+\]
+Como \(\widehat{x}\) no es solución básica factible, por la caracterización anterior las columnas
+\[
+    \{a_j:j\in K\}
+\]
+son linealmente dependientes.
+
+Por lo tanto, existe un vector no nulo \(v_K\in\mathbb{R}^{K}\) tal que
+\[
+    A_Kv_K=0.
+\]
+
+Extendemos este vector a un vector \(v\in\mathbb{R}^n\) definiendo
+\[
+    v_j=0,
+    \qquad
+    j\notin K.
+\]
+Entonces
+\[
+    Av=0,
+    \qquad
+    v\neq 0.
+\]
+
+Además, como \(v_j=0\) para \(j\notin K\), las perturbaciones
+\[
+    \widehat{x}+tv
+\]
+solo modifican las coordenadas donde \(\widehat{x}\) es estrictamente positiva.
+
+Para \(t\in\mathbb{R}\), se tiene
+\[
+    A(\widehat{x}+tv)
+    =
+    A\widehat{x}+tAv
+    =
+    b.
+\]
+Luego, mientras se mantenga la no negatividad,
+\[
+    \widehat{x}+tv\geq 0,
+\]
+el punto \(\widehat{x}+tv\) sigue siendo factible.
+
+Ahora analizamos el valor objetivo:
+\[
+    c^\top(\widehat{x}+tv)
+    =
+    c^\top\widehat{x}
+    +
+    t\,c^\top v.
+\]
+
+\medskip
+
+\noindent
+\textbf{Caso 1: \(c^\top v>0\).}
+
+Entonces, para \(t>0\) suficientemente pequeño,
+\[
+    \widehat{x}+tv\geq 0
+\]
+y
+\[
+    c^\top(\widehat{x}+tv)
+    >
+    c^\top\widehat{x}.
+\]
+Como además \(A(\widehat{x}+tv)=b\), esto produciría un punto factible con valor objetivo mayor.
+
+Si el valor objetivo pudiera crecer indefinidamente en esa dirección, se contradiría la hipótesis de acotación superior. Por tanto, aumentando \(t\) hasta el mayor valor admisible, alguna coordenada positiva de \(\widehat{x}\) se anula y obtenemos un punto factible con:
+\[
+    c^\top(\widehat{x}+tv)\geq c^\top\widehat{x}
+\]
+y con más componentes nulas que \(\widehat{x}\), contradiciendo la elección de \(\widehat{x}\).
+
+\medskip
+
+\noindent
+\textbf{Caso 2: \(c^\top v<0\).}
+
+En este caso usamos la dirección contraria \(-v\). Como
+\[
+    c^\top(-v)>0,
+\]
+se aplica el caso anterior a \(-v\). Nuevamente obtenemos una contradicción con la maximalidad del número de ceros de \(\widehat{x}\).
+
+\medskip
+
+\noindent
+\textbf{Caso 3: \(c^\top v=0\).}
+
+Entonces
+\[
+    c^\top(\widehat{x}+tv)
+    =
+    c^\top\widehat{x}
+\]
+para todo \(t\) tal que \(\widehat{x}+tv\) sea factible.
+
+Como \(v\neq 0\) y \(v\) solo tiene soporte en \(K\), podemos elegir \(t\neq 0\) de manera que:
+\[
+    \widehat{x}+tv\geq 0,
+\]
+y al menos una de las componentes positivas de \(\widehat{x}\) se vuelva cero.
+
+Así obtenemos un punto factible \(\widetilde{x}\) tal que
+\[
+    c^\top \widetilde{x}
+    =
+    c^\top\widehat{x}
+    \geq
+    c^\top x^0,
+\]
+pero con más componentes nulas que \(\widehat{x}\), lo cual contradice nuevamente la elección de \(\widehat{x}\).
+
+\medskip
+
+En todos los casos llegamos a contradicción. Por lo tanto, las columnas asociadas a las componentes positivas de \(\widehat{x}\) deben ser linealmente independientes. Por la caracterización de soluciones básicas factibles, concluimos que
+\[
+    \widehat{x}
+    \text{ es una SBF.}
+\]
+
+Como además \(\widehat{x}\) puede escogerse con valor objetivo óptimo, existe una solución óptima que es solución básica factible.
+\end{proof}
+
+\subsection{Interpretación geométrica del resultado}
+
+Sea
+\[
+    F=\{x\in\mathbb{R}^n:Ax=b,\ x\geq 0\}\neq\varnothing.
+\]
+
+Si la función objetivo está acotada superiormente sobre \(F\), entonces existe una solución óptima que es solución básica factible.
+
+La interpretación geométrica es:
+
+\[
+    \text{si un programa lineal tiene óptimo, entonces algún óptimo está en un vértice.}
+\]
+
+Como las soluciones básicas factibles corresponden a vértices del conjunto factible, el teorema justifica buscar el óptimo recorriendo SBF.
+
+\subsection{Soluciones básicas factibles en forma general}
+
+En la forma de igualdad
+\[
+    F=\{x\in\mathbb{R}^n:Ax=b,\ x\geq 0\},
+\]
+las restricciones de no negatividad
+\[
+    x_j\geq 0
+\]
+también pueden verse como restricciones activas o inactivas.
+
+\begin{definition}[Restricción activa]
+Para una solución factible \(x\), una restricción se dice \emph{activa} si se satisface con igualdad.
+\end{definition}
+
+En particular, para la restricción
+\[
+    x_j\geq 0,
+\]
+la restricción está activa en \(x\) si
+\[
+    x_j=0.
+\]
+
+\begin{definition}[Solución básica factible en términos de restricciones activas]
+Una solución factible \(x\) de un programa lineal se llama \emph{solución básica factible} si entre las restricciones activas hay suficientes restricciones linealmente independientes para determinar de manera única al punto \(x\).
+\end{definition}
+
+Esta definición coincide con la definición anterior para la forma de igualdad.
+
+\subsection{Ejemplos de restricciones activas}
+
+\paragraph{Ejemplo 1.}
+Consideremos un problema en una variable:
+\[
+    x\in\mathbb{R}.
+\]
+Si el conjunto factible está determinado por restricciones como
+\[
+    2x+5x_2=5,
+\]
+% revisar: en el manuscrito el ejemplo aparece abreviado; parece ser un ejemplo
+% de restricción activa en dimensión baja.
+entonces una restricción es activa cuando se alcanza exactamente la igualdad correspondiente.
+
+\paragraph{Ejemplo 2.}
+Consideremos restricciones del tipo
+\[
+    x_1+x_2=3.
+\]
+Un punto como
+\[
+    (1,0,1,0)
+\]
+puede representar una solución donde ciertas restricciones de no negatividad están activas, es decir, ciertas coordenadas son iguales a cero.
+
+\begin{remark}
+La idea general es que en una SBF hay suficientes restricciones activas para fijar completamente el punto. Geométricamente, esto corresponde a estar en un vértice del conjunto factible.
+\end{remark}
+
+\subsection{Forma de igualdad y soluciones básicas factibles}
+
+Para un problema en forma de igualdad,
+\[
+    F=
+    \{x\in\mathbb{R}^n:Ax=b,\ x\geq 0\},
+\]
+un punto \(x\in F\) es una SBF si existe una base
+\[
+    B\subseteq[n]
+\]
+tal que:
+\[
+    A_B \text{ es no singular},
+\]
+y
+\[
+    x_j=0,
+    \qquad
+    \forall j\notin B.
+\]
+
+Es decir, las variables no básicas son nulas.
+
+\subsection{Caracterizaciones equivalentes de SBF}
+
+\begin{theorem}
+Sea
+\[
+    F=
+    \{x\in\mathbb{R}^n:Ax=b,\ x\geq 0\}.
+\]
+Para un punto \(v\in F\), las siguientes condiciones son equivalentes:
+
+\begin{enumerate}
+    \item Existe un vector \(c\in\mathbb{R}^n\) tal que \(v\) es el único maximizador de \(c^\top x\) sobre \(F\), es decir,
+    \[
+        c^\top v>c^\top x,
+        \qquad
+        \forall x\in F,\ x\neq v.
+    \]
+
+    \item \(v\) es una solución básica factible.
+
+    \item \(v\) es un punto extremo de \(F\), es decir, \(v\) no puede escribirse como combinación convexa no trivial de otros dos puntos de \(F\).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Primero probamos que \((1)\Rightarrow(2)\).
+
+Supongamos que existe \(c\in\mathbb{R}^n\) tal que
+\[
+    c^\top v>c^\top x,
+    \qquad
+    \forall x\in F,\ x\neq v.
+\]
+Entonces \(v\) es el único maximizador de \(c^\top x\) sobre \(F\).
+
+Por el teorema fundamental de la programación lineal, existe una solución básica factible \(\widehat{x}\in F\) que maximiza \(c^\top x\) sobre \(F\). Luego,
+\[
+    c^\top \widehat{x}
+    =
+    c^\top v.
+\]
+Como \(v\) es el único maximizador, necesariamente
+\[
+    \widehat{x}=v.
+\]
+Por tanto, \(v\) es una SBF.
+
+\medskip
+
+Ahora probamos que \((2)\Rightarrow(1)\).
+
+Supongamos que \(v\) es una solución básica factible asociada a una base \(B\subseteq[n]\). Definimos un vector \(c\in\mathbb{R}^n\) por
+\[
+    c_j=
+    \begin{cases}
+        0, & j\in B,\\
+        -1, & j\notin B.
+    \end{cases}
+\]
+
+Como \(v_j=0\) para todo \(j\notin B\), se tiene
+\[
+    c^\top v=0.
+\]
+
+Por otro lado, si \(x\in F\), entonces \(x\geq 0\), y por la definición de \(c\),
+\[
+    c^\top x
+    =
+    -\sum_{j\notin B}x_j
+    \leq 0.
+\]
+Así, \(v\) maximiza \(c^\top x\) sobre \(F\).
+
+Además,
+\[
+    c^\top x=0
+\]
+solo si
+\[
+    x_j=0,
+    \qquad
+    \forall j\notin B.
+\]
+En ese caso, como \(x\in F\),
+\[
+    Ax=b.
+\]
+Pero, al tener \(x_j=0\) para \(j\notin B\), esto se reduce a
+\[
+    A_Bx_B=b.
+\]
+Como \(A_B\) es no singular, la solución es única:
+\[
+    x_B=A_B^{-1}b=v_B.
+\]
+Por lo tanto,
+\[
+    x=v.
+\]
+Concluimos que
+\[
+    c^\top v>c^\top x,
+    \qquad
+    \forall x\in F,\ x\neq v.
+\]
+
+Luego \(v\) es el único maximizador de una función lineal sobre \(F\).
+
+\medskip
+
+La equivalencia entre \((2)\) y \((3)\) corresponde a la identificación geométrica entre soluciones básicas factibles y puntos extremos del poliedro factible. Ya probamos que toda SBF es punto extremo. Recíprocamente, si un punto extremo no fuera SBF, entonces existiría una dirección no trivial \(w\neq 0\) con
+\[
+    Aw=0
+\]
+y con soporte contenido en las coordenadas positivas de \(v\). Para \(t>0\) suficientemente pequeño,
+\[
+    v+tw\in F
+    \qquad\text{y}\qquad
+    v-tw\in F.
+\]
+Entonces
+\[
+    v
+    =
+    \frac{1}{2}(v+tw)
+    +
+    \frac{1}{2}(v-tw),
+\]
+lo que contradice que \(v\) sea punto extremo. Por tanto, todo punto extremo es una SBF.
+\end{proof}
+
+% ============================================================
+% APUNTES.pdf -- Trozo 5
+% Páginas 9--11
+% ============================================================
+
+\section{Linealización de funciones lineales a trozos convexas}
+
+\subsection{Funciones lineales a trozos convexas}
+
+Una clase importante de funciones que aparece en programación lineal es la clase de las funciones \emph{lineales a trozos convexas}.
+
+\begin{definition}[Función lineal a trozos convexa]
+Una función
+\[
+    f:\mathbb{R}^n\to\mathbb{R}
+\]
+se dice \emph{lineal a trozos convexa} si puede escribirse como el máximo de una cantidad finita de funciones afines, es decir, si existen vectores
+\[
+    c_1,\dots,c_m\in\mathbb{R}^n
+\]
+y escalares
+\[
+    d_1,\dots,d_m\in\mathbb{R}
+\]
+tales que
+\[
+    f(x)
+    =
+    \max_{i\in[m]}
+    \{c_i^\top x+d_i\}.
+\]
+\end{definition}
+
+Aquí usamos la notación
+\[
+    [m]=\{1,\dots,m\}.
+\]
+
+\begin{remark}
+Toda función de la forma
+\[
+    f(x)=\max_{i\in[m]}\{c_i^\top x+d_i\}
+\]
+es convexa, porque es el máximo puntual de funciones afines.
+\end{remark}
+
+\subsection{Ejemplo: aproximación lineal}
+
+Supongamos que tenemos puntos
+\[
+    p_i=(x_i,y_i)\in\mathbb{R}^2,
+    \qquad i=1,\dots,m,
+\]
+y queremos encontrar una recta
+\[
+    y=ax+b
+\]
+que aproxime estos datos.
+
+El error asociado al punto \(p_i\) es
+\[
+    r_i(a,b)
+    =
+    ax_i+b-y_i.
+\]
+
+Distintas medidas de aproximación conducen a distintos problemas de optimización.
+
+\paragraph{Mínimos cuadrados.}
+Una primera medida es minimizar la suma de los cuadrados de los residuos:
+\[
+    \min_{a,b}
+    \sum_{i=1}^{m}
+    (ax_i+b-y_i)^2.
+\]
+
+\paragraph{Error máximo.}
+Otra posibilidad es minimizar el peor error absoluto:
+\[
+    \min_{a,b}
+    \max_{i\in[m]}
+    |ax_i+b-y_i|.
+\]
+
+\paragraph{Error absoluto total.}
+También podemos minimizar la suma de los errores absolutos:
+\[
+    \min_{a,b}
+    \sum_{i=1}^{m}
+    |ax_i+b-y_i|.
+\]
+
+Estas dos últimas formulaciones involucran funciones lineales a trozos convexas y pueden transformarse en programas lineales mediante variables auxiliares.
+
+\subsection{Ejemplos básicos}
+
+\begin{example}[Valor absoluto]
+La función
+\[
+    f:\mathbb{R}\to\mathbb{R},
+    \qquad
+    f(x)=|x|,
+\]
+puede escribirse como
+\[
+    |x|
+    =
+    \max\{x,-x\}.
+\]
+Por lo tanto, \(f\) es lineal a trozos convexa.
+\end{example}
+
+\begin{example}[Norma infinito]
+La norma infinito en \(\mathbb{R}^n\) está dada por
+\[
+    \|x\|_\infty
+    =
+    \max_{i\in[n]}|x_i|.
+\]
+Como
+\[
+    |x_i|=\max\{x_i,-x_i\},
+\]
+se tiene
+\[
+    \|x\|_\infty
+    =
+    \max\{x_1,-x_1,\dots,x_n,-x_n\}.
+\]
+Luego \(\|\cdot\|_\infty\) es una función lineal a trozos convexa.
+\end{example}
+
+\begin{example}[Norma uno]
+La norma uno en \(\mathbb{R}^n\) está dada por
+\[
+    \|x\|_1
+    =
+    \sum_{i=1}^{n}|x_i|.
+\]
+Como el valor absoluto es lineal a trozos convexo y las sumas con coeficientes no negativos preservan convexidad, \(\|\cdot\|_1\) es convexa.
+
+Además, usando variables auxiliares, también puede representarse mediante restricciones lineales.
+\end{example}
+
+\subsection{Operaciones que preservan convexidad}
+
+Sean
+\[
+    f_1,\dots,f_k:\mathbb{R}^n\to\mathbb{R}
+\]
+funciones convexas y sean
+\[
+    \alpha_1,\dots,\alpha_k\geq 0.
+\]
+Entonces
+\[
+    f(x)
+    =
+    \sum_{i=1}^{k}\alpha_i f_i(x)
+\]
+también es convexa.
+
+En particular, si \(f_1,\dots,f_k\) son funciones lineales a trozos convexas, entonces cualquier combinación lineal no negativa de ellas sigue siendo convexa.
+
+\subsection{Restricciones lineales a trozos convexas}
+
+Supongamos que tenemos una restricción de la forma
+\[
+    \max_{i\in[m]}
+    \{c_i^\top x+d_i\}
+    \leq h.
+\]
+
+Esta restricción es equivalente a pedir que cada una de las funciones afines esté por debajo de \(h\). Es decir,
+\[
+    \max_{i\in[m]}
+    \{c_i^\top x+d_i\}
+    \leq h
+\]
+si y solamente si
+\[
+    c_i^\top x+d_i\leq h,
+    \qquad i=1,\dots,m.
+\]
+
+Por tanto, una restricción lineal a trozos convexa puede reemplazarse por una familia finita de restricciones lineales.
+
+\begin{remark}
+Esta observación es fundamental: permite transformar restricciones con máximos de funciones afines en restricciones lineales ordinarias.
+\end{remark}
+
+\subsection{Linealización mediante epígrafo}
+
+Sea
+\[
+    f:\mathbb{R}^n\to\mathbb{R}
+\]
+una función lineal a trozos convexa de la forma
+\[
+    f(x)
+    =
+    \max_{i\in[m]}
+    \{c_i^\top x+d_i\}.
+\]
+
+Consideremos el problema
+\[
+    \begin{array}{ll}
+        \min & f(x)\\[1mm]
+        \text{sujeto a} & Ax\leq b.
+    \end{array}
+\]
+
+La idea es introducir una nueva variable \(t\) que represente una cota superior para \(f(x)\). Así, el problema anterior es equivalente a
+\[
+    \begin{array}{ll}
+        \min & t\\[1mm]
+        \text{sujeto a} & t\geq f(x),\\
+        & Ax\leq b.
+    \end{array}
+\]
+
+Como
+\[
+    f(x)=\max_{i\in[m]}\{c_i^\top x+d_i\},
+\]
+la restricción
+\[
+    t\geq f(x)
+\]
+es equivalente a
+\[
+    t\geq c_i^\top x+d_i,
+    \qquad i=1,\dots,m.
+\]
+
+Por tanto, obtenemos el programa lineal
+\[
+    \begin{array}{ll}
+        \min & t\\[1mm]
+        \text{sujeto a}
+        & c_i^\top x+d_i\leq t,
+        \qquad i=1,\dots,m,\\
+        & Ax\leq b.
+    \end{array}
+\]
+
+\begin{definition}[Epígrafo]
+El \emph{epígrafo} de una función
+\[
+    f:\mathbb{R}^n\to\mathbb{R}
+\]
+se define como
+\[
+    \operatorname{epi}(f)
+    =
+    \{(x,t)\in\mathbb{R}^n\times\mathbb{R}:f(x)\leq t\}.
+\]
+\end{definition}
+
+Con esta notación, la transformación anterior consiste en reemplazar la minimización de \(f(x)\) por la minimización de \(t\) sobre el epígrafo de \(f\).
+
+\[
+    \min_x f(x)
+    \qquad
+    \Longleftrightarrow
+    \qquad
+    \begin{array}{ll}
+        \min & t\\
+        \text{sujeto a} & (x,t)\in \operatorname{epi}(f).
+    \end{array}
+\]
+
+\subsection{Linealización del valor absoluto}
+
+La desigualdad
+\[
+    t\geq |z|
+\]
+es equivalente al sistema lineal
+\[
+    t\geq z,
+    \qquad
+    t\geq -z.
+\]
+
+En efecto,
+\[
+    |z|=\max\{z,-z\}.
+\]
+
+Por tanto, cada vez que aparece una expresión de la forma
+\[
+    |z|
+\]
+en una función objetivo o restricción, podemos introducir una variable auxiliar \(t\) y reemplazar
+\[
+    t\geq |z|
+\]
+por
+\[
+    t\geq z,
+    \qquad
+    t\geq -z.
+\]
+
+\subsection{Ejemplo: ajuste de una recta con norma infinito}
+
+Sean
+\[
+    p_i=(u_i,v_i)\in\mathbb{R}^2,
+    \qquad i=1,\dots,m.
+\]
+
+Queremos encontrar una recta
+\[
+    v=au+b
+\]
+que aproxime los puntos \(p_i\). El residuo asociado al punto \(p_i\) es
+\[
+    r_i(a,b)=au_i+b-v_i.
+\]
+
+Si medimos el error usando la norma infinito, el problema es
+\[
+    \min_{a,b}
+    \max_{i\in[m]}
+    |au_i+b-v_i|.
+\]
+
+Introducimos una variable auxiliar \(t\). El problema anterior es equivalente a
+\[
+    \begin{array}{ll}
+        \min & t\\[1mm]
+        \text{sujeto a}
+        & t\geq |au_i+b-v_i|,
+        \qquad i=1,\dots,m.
+    \end{array}
+\]
+
+Usando la linealización del valor absoluto, esto se transforma en
+\[
+    \begin{array}{ll}
+        \min & t\\[1mm]
+        \text{sujeto a}
+        & t\geq au_i+b-v_i,
+        \qquad i=1,\dots,m,\\
+        & t\geq -au_i-b+v_i,
+        \qquad i=1,\dots,m.
+    \end{array}
+\]
+
+Este es un programa lineal en las variables
+\[
+    a,\ b,\ t.
+\]
+
+\subsection{Ejemplo: ajuste de una recta con norma uno}
+
+Ahora medimos el error total mediante la norma uno:
+\[
+    \min_{a,b}
+    \sum_{i=1}^{m}
+    |au_i+b-v_i|.
+\]
+
+Introducimos variables auxiliares
+\[
+    e_i\geq 0,
+    \qquad i=1,\dots,m,
+\]
+tales que
+\[
+    e_i\geq |au_i+b-v_i|.
+\]
+
+La condición anterior es equivalente a
+\[
+    e_i\geq au_i+b-v_i,
+    \qquad
+    e_i\geq -au_i-b+v_i,
+    \qquad i=1,\dots,m.
+\]
+
+Por tanto, el problema se escribe como el programa lineal
+\[
+    \begin{array}{ll}
+        \min & \displaystyle\sum_{i=1}^{m}e_i\\[2mm]
+        \text{sujeto a}
+        & e_i\geq au_i+b-v_i,
+        \qquad i=1,\dots,m,\\
+        & e_i\geq -au_i-b+v_i,
+        \qquad i=1,\dots,m,\\
+        & e_i\geq 0,
+        \qquad i=1,\dots,m.
+    \end{array}
+\]
+
+\subsection{Ejemplo: planificación de producción de helados}
+
+Consideremos un problema de planificación de producción durante un año, dividido en doce meses. Para cada mes \(i\in\{1,\dots,12\}\), la demanda está dada por
+\[
+    d_i.
+\]
+
+Definimos las variables:
+\[
+    X_i\geq 0,
+    \qquad i=1,\dots,12,
+\]
+donde \(X_i\) representa la producción del mes \(i\), y
+\[
+    S_i\geq 0,
+    \qquad i=1,\dots,12,
+\]
+donde \(S_i\) representa el stock al final del mes \(i\).
+
+El balance de inventario se expresa como
+\[
+    X_i+S_{i-1}-S_i=d_i,
+    \qquad i=1,\dots,12.
+\]
+
+Aquí \(S_{i-1}\) corresponde al inventario disponible al comienzo del mes \(i\).
+
+En los apuntes se considera que el stock inicial y el stock final son cero:
+\[
+    S_0=0,
+    \qquad
+    S_{12}=0.
+\]
+% revisar: la frase manuscrita indica que el stock del año pasado y el stock final
+% de este año deben ser cero.
+
+La función objetivo incluye dos costos:
+\begin{itemize}
+    \item un costo de almacenamiento proporcional al stock:
+    \[
+        20000\sum_{i=1}^{12}S_i;
+    \]
+    \item un costo por cambios en la producción entre meses consecutivos:
+    \[
+        50000\sum_{i=1}^{12}|X_i-X_{i-1}|.
+    \]
+\end{itemize}
+
+% revisar: el índice inicial de la suma de variaciones puede ser i=2,\dots,12
+% si no se define una producción previa X_0. En el manuscrito aparece escrito
+% como una variación entre meses consecutivos.
+
+Así, una formulación inicial del problema es
+\[
+    \begin{array}{ll}
+        \min
+        &
+        20000\displaystyle\sum_{i=1}^{12}S_i
+        +
+        50000\displaystyle\sum_{i=1}^{12}|X_i-X_{i-1}|
+        \\[3mm]
+        \text{sujeto a}
+        &
+        X_i+S_{i-1}-S_i=d_i,
+        \qquad i=1,\dots,12,\\[1mm]
+        &
+        X_i\geq 0,
+        \qquad i=1,\dots,12,\\[1mm]
+        &
+        S_i\geq 0,
+        \qquad i=1,\dots,12,\\[1mm]
+        &
+        S_0=0,\qquad S_{12}=0.
+    \end{array}
+\]
+
+Para linealizar los valores absolutos, introducimos variables auxiliares
+\[
+    t_i\geq 0,
+    \qquad i=1,\dots,12,
+\]
+tales que
+\[
+    t_i\geq |X_i-X_{i-1}|.
+\]
+
+Equivalentemente,
+\[
+    t_i\geq X_i-X_{i-1},
+    \qquad
+    t_i\geq -X_i+X_{i-1}.
+\]
+
+Por lo tanto, obtenemos el programa lineal equivalente
+\[
+    \begin{array}{ll}
+        \min
+        &
+        20000\displaystyle\sum_{i=1}^{12}S_i
+        +
+        50000\displaystyle\sum_{i=1}^{12}t_i
+        \\[3mm]
+        \text{sujeto a}
+        &
+        X_i+S_{i-1}-S_i=d_i,
+        \qquad i=1,\dots,12,\\[1mm]
+        &
+        t_i\geq X_i-X_{i-1},
+        \qquad i=1,\dots,12,\\[1mm]
+        &
+        t_i\geq -X_i+X_{i-1},
+        \qquad i=1,\dots,12,\\[1mm]
+        &
+        X_i\geq 0,
+        \qquad i=1,\dots,12,\\[1mm]
+        &
+        S_i\geq 0,
+        \qquad i=1,\dots,12,\\[1mm]
+        &
+        t_i\geq 0,
+        \qquad i=1,\dots,12,\\[1mm]
+        &
+        S_0=0,\qquad S_{12}=0.
+    \end{array}
+\]
+
+\subsection{Ejemplo: separación de puntos}
+
+Supongamos que tenemos dos familias de puntos en el plano:
+\[
+    p_1,\dots,p_m
+\]
+etiquetados con \(+1\), y
+\[
+    q_1,\dots,q_n
+\]
+etiquetados con \(-1\).
+
+Escribimos
+\[
+    p_i=(u(p_i),v(p_i)),
+    \qquad
+    q_j=(u(q_j),v(q_j)).
+\]
+
+Queremos encontrar una recta
+\[
+    v=au+b
+\]
+que separe los puntos \(p_i\) de los puntos \(q_j\).
+
+Una forma de imponer la separación es pedir que los puntos \(p_i\) queden por encima de la recta y los puntos \(q_j\) queden por debajo. Esto se expresa como
+\[
+    v(p_i)\geq au(p_i)+b,
+    \qquad i=1,\dots,m,
+\]
+y
+\[
+    v(q_j)\leq au(q_j)+b,
+    \qquad j=1,\dots,n.
+\]
+
+Estas son restricciones lineales en las variables \(a\) y \(b\).
+
+\subsubsection{Separación con margen}
+
+Podemos mejorar la formulación introduciendo una variable de margen
+\[
+    \delta\geq 0.
+\]
+
+La idea es exigir que los puntos \(p_i\) estén al menos a una distancia vertical \(\delta\) por encima de la recta, y que los puntos \(q_j\) estén al menos a una distancia vertical \(\delta\) por debajo de la recta.
+
+Esto da las restricciones
+\[
+    v(p_i)\geq au(p_i)+b+\delta,
+    \qquad i=1,\dots,m,
+\]
+y
+\[
+    v(q_j)\leq au(q_j)+b-\delta,
+    \qquad j=1,\dots,n.
+\]
+
+Entonces buscamos maximizar el margen:
+\[
+    \begin{array}{ll}
+        \max & \delta\\[1mm]
+        \text{sujeto a}
+        &
+        v(p_i)\geq au(p_i)+b+\delta,
+        \qquad i=1,\dots,m,\\[1mm]
+        &
+        v(q_j)\leq au(q_j)+b-\delta,
+        \qquad j=1,\dots,n,\\[1mm]
+        &
+        \delta\geq 0.
+    \end{array}
+\]
+
+Este es un programa lineal en las variables
+\[
+    a,\ b,\ \delta.
+\]
+
+\begin{remark}
+Este ejemplo muestra cómo un problema geométrico de clasificación lineal puede escribirse como un programa lineal, siempre que usemos una noción lineal de separación y margen.
+\end{remark}
